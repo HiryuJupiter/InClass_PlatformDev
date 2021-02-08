@@ -47,6 +47,7 @@ public class MobileInput : MonoBehaviour
 
     void Update()
     {
+        //
         if (HasTouch)
         {
             foreach (Touch touch in Input.touches)
