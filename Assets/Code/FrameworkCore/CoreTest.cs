@@ -15,15 +15,15 @@ namespace BreadAndButter
         private void Start()
         {
             CreateInstance();
-            FlagAsPersistant();
+            DontDestroyOnLoad();
 
-            RunnableUtil.Setup(ref runnableTest, gameObject, "Sally", new Vector3(1, 1, 1));
+            RunnableUtil.Setup(runnableTest, gameObject, "Sally", new Vector3(1, 1, 1));
         }
 
         private void Update()
         {
             runnableTest.Enabled = testEnabled;
-            RunnableUtil.Run(ref runnableTest, gameObject);
+            RunnableUtil.Run(runnableTest, gameObject);
         }
     }
 }
