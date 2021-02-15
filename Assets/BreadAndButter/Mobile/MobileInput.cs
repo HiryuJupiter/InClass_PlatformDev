@@ -7,12 +7,17 @@ using NullReferenceException    = System.NullReferenceException;
 //This is to avoid name comflipt
 using UnitySceneMananger = UnityEngine.SceneManagement;
 
-namespace BreadAndButter
+namespace BreadAndButter.Mobile
 {
     public class MobileInput : MonoBehaviour
     {
         private static MobileInput instance = null;
         public static bool Initialized => instance != null;
+
+        [SerializeField]
+        private JoystickInput joystickInput;
+
+
 
         public static void Initialize ()
         {
@@ -28,11 +33,25 @@ namespace BreadAndButter
             instance.gameObject.name = "MobileInputPrefab";
             DontDestroyOnLoad(instance.gameObject);
         }
-
-        private void Awake()
+  
+        public static float GetJoystickAxis(JoystickAxis axis)
         {
-            instance = this;
-        }
+            if (!Initialized)
+            {
+                throw new InvalidOperationException("Mobile Input not initialized");
+            }
 
+            if (instance.joystickInput == null)
+            {
+                throw new NullReferenceException("Joystick input reference not set");
+            }
+
+            switch (axis)
+            {
+                case JoystickAxis.Horizontal:   return instance.joystickInput.Axis.x;
+                case JoystickAxis.Vertical:     return instance.joystickInput.Axis.y;
+                default:                        return 0f;
+            }
+        }
     }
 }
