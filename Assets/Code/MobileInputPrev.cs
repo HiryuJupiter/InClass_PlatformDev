@@ -6,7 +6,7 @@ using System.Collections.Generic;
 //https://github.com/jjhesk/unity-interview/blob/master/Assets/Plugins/EasyTouch/EasyTouch.cs
 
 
-public class MobileInput : MonoBehaviour
+public class MobileInputPrev : MonoBehaviour
 {
     public class Swipe
     {
