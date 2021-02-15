@@ -46,6 +46,7 @@ namespace BreadAndButter.Mobile
                 throw new NullReferenceException("Joystick input reference not set");
             }
 
+
             switch (axis)
             {
                 case JoystickAxis.Horizontal:   return instance.joystickInput.Axis.x;
