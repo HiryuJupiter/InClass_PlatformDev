@@ -1,35 +1,28 @@
 ﻿using UnityEngine;
 
-namespace BreadAndButter.Mobile
+namespace TafeDiplomaFramework.Mobile
 {
     public class MobileInput : MonoBehaviour
     {
         private static MobileInput instance = null;
 
-        [SerializeField]
+        [SerializeField] 
         private JoystickInput joystickInput;
-
-        private static bool Initialized => instance != null;
+        [SerializeField]
+        private SwipeInput swipeInput;
 
         public static void InstantiateFromResource ()
         {
-            if (Initialized)
-                throw new System.InvalidOperationException("Mobile Input already initialized");
-
-            MobileInput prefabInstance = Resources.Load<MobileInput>("MobileInputPrefab");
-            instance = Instantiate(prefabInstance);
-            instance.gameObject.name = "MobileInputPrefab";
-            DontDestroyOnLoad(instance.gameObject);
+            if ( instance == null)
+            {
+                MobileInput prefabInstance = Resources.Load<MobileInput>("MobileInputPrefab");
+                instance = Instantiate(prefabInstance);
+                instance.gameObject.name = "MobileInputPrefab";
+            }
         }
   
         public static float GetJoystickAxis(JoystickAxis axis)
         {
-            if (!Initialized)
-                throw new System.InvalidOperationException("Mobile Input not initialized");
-
-            if (instance.joystickInput == null)
-                throw new System.NullReferenceException("Joystick input reference not set");
-
             switch (axis)
             {
                 case JoystickAxis.Horizontal:   return instance.joystickInput.DragDir.x;

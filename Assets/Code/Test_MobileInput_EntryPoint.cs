@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BreadAndButter.Mobile;
+using TafeDiplomaFramework.Mobile;
 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
-
-    public class MobileTest : MonoBehaviour
+    public class Test_MobileInput_EntryPoint : MonoBehaviour
     {
         void Awake()
         {
@@ -19,5 +18,4 @@ namespace BreadAndButter
             transform.position += transform.right * MobileInput.GetJoystickAxis(JoystickAxis.Horizontal) * Time.deltaTime;
         }
     }
-
 }

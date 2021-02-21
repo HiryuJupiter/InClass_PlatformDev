@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 771510472058371432}
   - component: {fileID: 1224420188738362513}
+  - component: {fileID: 5391082721036212461}
   m_Layer: 0
   m_Name: MobileInputPrefab
   m_TagString: Untagged
@@ -46,6 +47,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joystickInput: {fileID: 156536061115714785}
+  swipeInput: {fileID: 5391082721036212461}
+--- !u!114 &5391082721036212461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061357471469272949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6282852e08f6843a6a5bd796185492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1878801061216337947
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,6 +122,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -135,7 +151,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handle: {fileID: 4370496070371802448}
   backGround: {fileID: 3061820882059049975}
-  deadZone: 0.25
 --- !u!1 &4257941795364448108
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,6 +211,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -357,6 +374,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &6523432669595666310
 MonoBehaviour:
   m_ObjectHideFlags: 0

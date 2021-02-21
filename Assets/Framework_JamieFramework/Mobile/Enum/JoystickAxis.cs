@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
     public enum JoystickAxis 
     { 

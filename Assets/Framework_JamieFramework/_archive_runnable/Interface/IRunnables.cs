@@ -5,7 +5,7 @@ using UnityEngine;
 //This class isn't needed as you don't expect any class other than Runnable to implemen 
 // this interface,
 // 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
     public interface IRunnables_archive
     {

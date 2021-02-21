@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BreadAndButter;
-using BreadAndButter.Mobile;
+using TafeDiplomaFramework;
+using TafeDiplomaFramework.Mobile;
 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
-    
-    public class RunnableTest : RunnableBehavior
+    public class ExampleRunnable : RunnableBehavior
     {
         [SerializeField]
         private TextMesh nameplate;

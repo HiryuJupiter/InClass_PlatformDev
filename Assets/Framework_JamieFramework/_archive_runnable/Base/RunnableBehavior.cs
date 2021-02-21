@@ -7,7 +7,7 @@ using UnityEngine;
 and so we can have custom Update function (defined by Run())
  */
 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
     public abstract class RunnableBehavior : MonoBehaviour
     {

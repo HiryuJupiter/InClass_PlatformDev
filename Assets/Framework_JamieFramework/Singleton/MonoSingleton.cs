@@ -4,7 +4,7 @@ using UnityEngine;
 
 using NullReferenceException = System.NullReferenceException;
 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
 
     //T stands for type

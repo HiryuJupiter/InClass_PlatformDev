@@ -5,13 +5,13 @@ using System.Collections.Generic;
 //What is flick? Flick is taking the first touch, in update frame, monitor it moving until it ends. Then you check the amount of time for this to occur. If it's more than a second, it becomes a swipe.
 //https://github.com/jjhesk/unity-interview/blob/master/Assets/Plugins/EasyTouch/EasyTouch.cs
 
-public class Swipe
+public class SwipePrev
 {
     public Vector2 initialPosition = new Vector2();
     public List<Vector2> positions = new List<Vector2>();
     public int fingerID;
 
-    public Swipe(Vector2 _initialPos, int _fingerID)
+    public SwipePrev(Vector2 _initialPos, int _fingerID)
     {
         initialPosition = _initialPos;
         positions.Add(_initialPos);
@@ -21,7 +21,7 @@ public class Swipe
 
 public class MobileInputPrev : MonoBehaviour
 {
-    private static Dictionary<int, Swipe> Swipes = new Dictionary<int, Swipe>(); // FingerID to swipe
+    private static Dictionary<int, SwipePrev> Swipes = new Dictionary<int, SwipePrev>(); // FingerID to swipe
     private float flickDuration = 0; 
     private Vector2 flickOrigin = Vector2.positiveInfinity;
     private int initialFinger = -1; 
@@ -30,9 +30,9 @@ public class MobileInputPrev : MonoBehaviour
     public static float FlickPower { get; private set; }        = float.PositiveInfinity;
     public static int SwipeCount => Swipes.Count; 
 
-    public static Swipe GetSwipe(int _index)
+    public static SwipePrev GetSwipe(int _index)
     {
-        Swipe temp;
+        SwipePrev temp;
         Swipes.TryGetValue(_index, out temp);
         return temp;
     }
@@ -56,9 +56,9 @@ public class MobileInputPrev : MonoBehaviour
                 // Swipe storage 
                 if (touch.phase == TouchPhase.Began)
                 {
-                    Swipes.Add(touch.fingerId, new Swipe(touch.position, touch.fingerId));
+                    Swipes.Add(touch.fingerId, new SwipePrev(touch.position, touch.fingerId));
                 }
-                else if (touch.phase == TouchPhase.Moved && Swipes.TryGetValue(touch.fingerId, out Swipe swipe))
+                else if (touch.phase == TouchPhase.Moved && Swipes.TryGetValue(touch.fingerId, out SwipePrev swipe))
                 {
                     swipe.positions.Add(touch.position);
                 }

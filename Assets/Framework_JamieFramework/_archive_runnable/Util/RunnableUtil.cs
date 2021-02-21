@@ -1,34 +1,35 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace BreadAndButter
+namespace TafeDiplomaFramework
 {
     
     public static class RunnableUtil
     {
         //Validates if IRunnable is attached to the gameobject
-        public static bool Validate(ref RunnableBehavior _runnable, GameObject _from)
+        public static bool TryGetRunnableFromGameObject<T>(ref T runnable, GameObject from) where T : RunnableBehavior
         {
-            if (_runnable||
-                (_runnable = _from.GetComponent<RunnableBehavior>()) ||
-                (_runnable = _from.GetComponentInChildren<RunnableBehavior>())) 
+            if ((runnable != null) ||
+                ((runnable = from.GetComponent<T>()) != null) ||
+                ((runnable = from.GetComponentInChildren<T>()) != null)) 
                 return true;
+
             return false;
         }
 
-        public static bool Setup(ref RunnableBehavior _runnable, GameObject _from, params object[] _params) 
+        public static bool Setup<T>(ref T runnable, GameObject from, params object[] _params) where T : RunnableBehavior
         {
-            if (Validate(ref _runnable, _from))
+            if (TryGetRunnableFromGameObject(ref runnable, from))
             {
-                _runnable.Setup(_params);
+                runnable.Setup(_params);
                 return true;
             }
             return false;
         }
 
-        public static void Run(ref RunnableBehavior _runnable, GameObject _from, params object[] _params) 
+        public static void Run<T>(ref T _runnable, GameObject _from, params object[] _params) where T : RunnableBehavior
         {
-            if (Validate(ref _runnable, _from))
+            if (TryGetRunnableFromGameObject(ref _runnable, _from))
             {
                 _runnable.Run(_params);
             }

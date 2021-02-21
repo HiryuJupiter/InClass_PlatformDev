@@ -767,5 +767,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2b0a44dc388d864290009bb170afaa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runnableTest: {fileID: 1111827433}
+  runnableScript: {fileID: 0}
   testEnabled: 1
