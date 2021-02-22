@@ -26,8 +26,12 @@ namespace TafeDiplomaFramework
             }
             if (testSwipe)
             {
-#if UNITY_EDITOR || UNITY_STANDALONE //If these are set, then run these code
-                if (Input.GetMouseButtonDown(0)) //Touch start
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+                //If in Android and iOS
+
+
+#else
+                 if (Input.GetMouseButtonDown(0)) //Touch start
                 {
 
                 }
@@ -44,8 +48,6 @@ namespace TafeDiplomaFramework
 
                 //Touch position emutliaotn
                 Vector2 touchPos = Input.mousePosition;
-#else
-                
 #endif
             }
         }
