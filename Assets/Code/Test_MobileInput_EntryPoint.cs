@@ -7,6 +7,11 @@ namespace TafeDiplomaFramework
 {
     public class Test_MobileInput_EntryPoint : MonoBehaviour
     {
+        [SerializeField]
+        private bool joystick = false; //Joystick will work with mobile and pc regardless
+        [SerializeField]
+        private bool testSwipe = false;
+
         void Awake()
         {
             MobileInput.InstantiateFromResource();
@@ -14,8 +19,35 @@ namespace TafeDiplomaFramework
 
         void Update()
         {
-            transform.position += transform.forward * MobileInput.GetJoystickAxis(JoystickAxis.Vertical) * Time.deltaTime;
-            transform.position += transform.right * MobileInput.GetJoystickAxis(JoystickAxis.Horizontal) * Time.deltaTime;
+            if (joystick)
+            {
+                transform.position += transform.forward * MobileInput.GetJoystickAxis(JoystickAxis.Vertical) * Time.deltaTime;
+                transform.position += transform.right * MobileInput.GetJoystickAxis(JoystickAxis.Horizontal) * Time.deltaTime;
+            }
+            if (testSwipe)
+            {
+#if UNITY_EDITOR || UNITY_STANDALONE //If these are set, then run these code
+                if (Input.GetMouseButtonDown(0)) //Touch start
+                {
+
+                }
+
+                if (Input.GetMouseButton(0)) //Touch update
+                {
+
+                }
+
+                if (Input.GetMouseButtonUp(0)) //Touch end
+                {
+                    
+                }
+
+                //Touch position emutliaotn
+                Vector2 touchPos = Input.mousePosition;
+#else
+                
+#endif
+            }
         }
     }
 }

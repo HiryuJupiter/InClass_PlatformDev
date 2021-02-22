@@ -9,7 +9,7 @@ namespace TafeDiplomaFramework.Mobile
         [SerializeField] 
         private JoystickInput joystickInput;
         [SerializeField]
-        private SwipeInput swipeInput;
+        private SwipeInputInClass swipeInput;
 
         public static void InstantiateFromResource ()
         {
@@ -29,6 +29,22 @@ namespace TafeDiplomaFramework.Mobile
                 case JoystickAxis.Vertical:     return instance.joystickInput.DragDir.y;
                 default:                        return 0f;
             }
+        }
+
+        public SwipeInputInClass.Swipe GetSwipe(int _index)
+        {
+            //!initialized
+
+            //isntance.swipeInput == null
+
+            return instance.swipeInput.GetSwipe(_index);
+        }
+
+        public static void GetFlickData (out float _flickPower, out Vector2 _flickDirection)
+        {
+            //Set the out parameter to their corresponding values in the swipe input class
+            _flickPower = instance.swipeInput.FlickPower;
+            _flickDirection = instance.swipeInput.FlickDirection;
         }
     }
 }
