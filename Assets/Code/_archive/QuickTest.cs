@@ -3,51 +3,32 @@ using UnityEngine;
 
 namespace Assets.Code
 {
-    public interface IMyInterface
-    {
-        void PrintText();
-
-        void PrintSomething(int number) => Debug.Log(number);
-    }
-
     public class QuickTest : MonoBehaviour
     {
-        enum Toys { Duck, Chicken}
+        public Transform target;
+        public Transform p1;
+        public Transform p2;
 
-        QuickTest A;
-        QuickTest B;
-        Toys toys;
+        bool leftToRight = true;
 
-        void Start()
+        IEnumerator DoMove()
         {
-            switch (toys)
+            for (float t = 0; t < 1f; t += Time.deltaTime)
             {
-                case Toys.Duck:
-                    break;
-                case Toys.Chicken:
-                    break;
-                default:
-                    break;
+                target.position = Vector3.Lerp(leftToRight ? p1.position : p2.position, 
+                    leftToRight ? p2.position : p1.position, t);
+
+                yield return null;
             }
-
-            //toys switch
-
-
-            Validate(A);
-            Validate(ref B);
-
-            Debug.Log("Is A null :" + (A == null));
-            Debug.Log("Is B null :" + (B == null));
+            leftToRight = !leftToRight;
         }
 
-        void Validate (QuickTest quickTest)
+        private void Update()
         {
-            quickTest = GetComponent<QuickTest>();
-        }
-
-        void Validate(ref QuickTest quickTest)
-        {
-            quickTest = GetComponent<QuickTest>();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                StartCoroutine(DoMove());
+            }
         }
     }
 
