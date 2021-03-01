@@ -645,6 +645,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40cf600b53d36814fbc98b1155108e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  joystick: 1
+  testSwipe: 1
 --- !u!1 &1111827429
 GameObject:
   m_ObjectHideFlags: 0
