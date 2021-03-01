@@ -11,6 +11,10 @@ namespace TafeDiplomaFramework
         private bool joystick = false; //Joystick will work with mobile and pc regardless
         [SerializeField]
         private bool testSwipe = false;
+        [SerializeField, TagAttributes]
+        private string groundTag;
+        [SerializeField, SceneField]
+        private string otherLevel;
 
         void Awake()
         {

@@ -17,20 +17,20 @@ public class Tile : MonoBehaviour
     [SerializeField] private GameObject selectionBorder;
     [SerializeField] private TileTypes type;
 
-    private bool isSelected;
+    private bool imCurrentlySelected;
     private Vector2 tileIndex;
 
     public SpriteRenderer SprRenderer => sr;
     public TileTypes Type => type;
 
-    public void InitialSpawn (Vector2Int tileIndex)
+    public void SetTileIndex (Vector2Int tileIndex)
     {
         this.tileIndex = tileIndex;
     }
 
     private void Select ()
     {
-        isSelected = true;
+        imCurrentlySelected = true;
         selectionBorder.SetActive(true);
         previousSelected = this;
         //SFXManager.instance.PlaySFX(Clip.Select);
@@ -38,62 +38,32 @@ public class Tile : MonoBehaviour
 
     private void Deselect()
     {
-        isSelected = false;
+        imCurrentlySelected = false;
         selectionBorder.SetActive(false);
         previousSelected = null;
     }
 
-    private void SwapTiles (Tile target)
-    {
-        if (this == target)
-        {
-            Debug.Log("This shouldn't happen");
-            return;
-        }
-        StartCoroutine(DoSwapTiles(target));
-    }
-
-    IEnumerator DoSwapTiles (Tile target)
-    {
-        if (target == null)
-            Debug.Log("null ref");
-
-        for (float t = 0; t < 1f; t+= Time.deltaTime)
-        {
-            transform.position = Vector3.Lerp(transform.position, target.transform.position, t);
-            yield return null;
-        }
-
-        yield return null;
-    }
-
     private void OnMouseDown()
     {
-        if (BoardManager.Instance.IsShifting)
+        if (BoardManager.Instance.IsComboShifting)
             return;
 
-        if (isSelected)
+        if (imCurrentlySelected) 
         {
             Deselect();
         }
-        else
+        else if (!imCurrentlySelected && aTileIsAlreadySelected)
         {
-            if (previousSelected == null)
-            {
-                Select();
-            }
-            else
-            {
-                Debug.Log("Deselect");
-                previousSelected.Deselect();
-                if (previousSelected != this)
-                {
-                    SwapTiles(previousSelected);
-                    previousSelected.SwapTiles(this);
-                }
-            }
+            Select();
+        }
+        else if (!imCurrentlySelected && !aTileIsAlreadySelected)
+        {
+            BoardManager.Instance.SwapTiles(this, previousSelected);
+            previousSelected.Deselect();
         }
     }
+
+    bool aTileIsAlreadySelected => previousSelected != null;
 }
 
 //https://www.raywenderlich.com/673-how-to-make-a-match-3-game-in-unity

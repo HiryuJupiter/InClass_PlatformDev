@@ -14,7 +14,19 @@ public class BoardManager : MonoBehaviour
     private TilesDirectory tilesDir;
     private Tile[,] tiles;
 
-    public bool IsShifting { get; private set; }
+    public bool IsComboShifting { get; private set; } //Are all the tiles shuffling after a match-3 combo hit?
+    public bool IsAnimatingSwap { get; private set; } //Are we in the swapping animation between 2 tiles?
+
+    public void SwapTiles(Tile t1, Tile tile)
+    {
+        //Lerp their positions
+
+        //then swap their tile index
+
+        //Check if there is match
+
+        //If there is a match, shuffle
+    }
 
     private void Awake()
     {
@@ -54,12 +66,13 @@ public class BoardManager : MonoBehaviour
                     startY + (offsetY + TileGaps) * y, 0f);
 
                 //Tile newTile = Instantiate(tilesDir.GetRandomPrefab(), spawnPos, Quaternion.identity, transform);
-                Tile newTile = Instantiate(tilesDir.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, transform);
-                tiles[x, y] = newTile;
+                Tile t = Instantiate(tilesDir.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, transform);
+                t.SetTileIndex(new Vector2Int(x, y));
+                tiles[x, y] = t;
 
                 //Cache for next loop
-                previousLeft[y] = newTile;
-                previousBelow = newTile;
+                previousLeft[y] = t;
+                previousBelow = t;
             }
         }
     }

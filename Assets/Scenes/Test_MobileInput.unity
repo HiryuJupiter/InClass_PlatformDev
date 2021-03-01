@@ -647,6 +647,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   joystick: 1
   testSwipe: 1
+  groundTag: Untagged
+  otherLevel: 
 --- !u!1 &1111827429
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,3 +773,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runnableScript: {fileID: 0}
   testEnabled: 1
+--- !u!1 &1690149296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1690149298}
+  - component: {fileID: 1690149297}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1690149297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690149296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55ae4db2be2de0847aad3227370d7d79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 1, y: 1, z: 1}
+  center: {x: 0, y: 0, z: 0}
+  floorYPosition: 0
+  spawnRate: {x: 0.19490194, y: 0.21588326}
+  shouldSpawnBoss: 0
+  bossSpawnChance: 0
+  bossPrefab: {fileID: 7865569067543616934, guid: eaf6a2bbd5644a5459a72a11f90796d7,
+    type: 3}
+  enemyPrefab: {fileID: 7865569067543616934, guid: eaf6a2bbd5644a5459a72a11f90796d7,
+    type: 3}
+--- !u!4 &1690149298
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690149296}
+  m_LocalRotation: {x: -0, y: -0.43426096, z: -0, w: 0.9007871}
+  m_LocalPosition: {x: -3.204, y: 1.2572966, z: -5.326}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: -51.477, z: 0}
