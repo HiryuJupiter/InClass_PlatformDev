@@ -3,12 +3,36 @@ using UnityEngine;
 
 namespace Assets.Code
 {
+    public interface IMyInterface
+    {
+        void PrintText();
+
+        void PrintSomething(int number) => Debug.Log(number);
+    }
+
     public class QuickTest : MonoBehaviour
     {
+        enum Toys { Duck, Chicken}
+
         QuickTest A;
         QuickTest B;
+        Toys toys;
+
         void Start()
         {
+            switch (toys)
+            {
+                case Toys.Duck:
+                    break;
+                case Toys.Chicken:
+                    break;
+                default:
+                    break;
+            }
+
+            //toys switch
+
+
             Validate(A);
             Validate(ref B);
 
