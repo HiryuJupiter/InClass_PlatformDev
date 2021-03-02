@@ -17,9 +17,25 @@ public class BoardManager : MonoBehaviour
     public bool IsComboShifting { get; private set; } //Are all the tiles shuffling after a match-3 combo hit?
     public bool IsAnimatingSwap { get; private set; } //Are we in the swapping animation between 2 tiles?
 
-    public void SwapTiles(Tile t1, Tile tile)
+    public void SwapTiles(Tile tile1, Tile tile2)
     {
-        //Lerp their positions
+        StartCoroutine(DoSwapTile(tile1, tile2));
+    }
+
+    IEnumerator DoSwapTile (Tile tile1, Tile tile2)
+    {
+        Vector3 pos1 = tile1.transform.position;
+        Vector3 pos2 = tile2.transform.position;
+
+        Debug.DrawLine(pos1, pos2, Color.red, 5f);
+
+        for (float t = 0; t < 1f; t += Time.deltaTime)
+        {
+            //Lerp their positions
+            tile1.transform.position = ParabolicMove.Move(pos1, pos2, t);
+            //tile2.transform.position = ParabolicMove.Move(pos2, pos1, t);
+            yield return null;
+        }
 
         //then swap their tile index
 
@@ -45,8 +61,8 @@ public class BoardManager : MonoBehaviour
         tiles = new Tile[tileCountX, tileCountY];
 
         //Prepare for tile spawning
-        float startX = transform.position.x;
-        float startY = transform.position.y;
+        float startX = -(tilesDir.TileSize.x + TileGaps) * (tileCountX -1) * .5f;
+        float startY = -(tilesDir.TileSize.y + TileGaps) * (tileCountY - 1) * .5f;
         Vector2 offset = tilesDir.TileSize;
         float offsetX = offset.x;
         float offsetY = offset.y;

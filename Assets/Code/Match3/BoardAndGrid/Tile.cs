@@ -52,18 +52,16 @@ public class Tile : MonoBehaviour
         {
             Deselect();
         }
-        else if (!imCurrentlySelected && aTileIsAlreadySelected)
+        else if (!imCurrentlySelected && previousSelected == null)
         {
             Select();
         }
-        else if (!imCurrentlySelected && !aTileIsAlreadySelected)
+        else if (!imCurrentlySelected && previousSelected != null)
         {
             BoardManager.Instance.SwapTiles(this, previousSelected);
             previousSelected.Deselect();
         }
     }
-
-    bool aTileIsAlreadySelected => previousSelected != null;
 }
 
 //https://www.raywenderlich.com/673-how-to-make-a-match-3-game-in-unity

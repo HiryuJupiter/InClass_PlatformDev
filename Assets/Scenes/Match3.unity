@@ -149,7 +149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 827105728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.11, y: -1.65, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c0365f1b616687408c618036e55f8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCountX: 9
-  tileCountY: 9
+  tileCountX: 2
+  tileCountY: 2
 --- !u!114 &827105731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,7 +267,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 893106425}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1985219659}

@@ -9,18 +9,13 @@ namespace Assets.Code
         public Transform p1;
         public Transform p2;
 
-        bool leftToRight = true;
-
         IEnumerator DoMove()
         {
             for (float t = 0; t < 1f; t += Time.deltaTime)
             {
-                target.position = Vector3.Lerp(leftToRight ? p1.position : p2.position, 
-                    leftToRight ? p2.position : p1.position, t);
-
+                target.position = ParabolicMove.Move(p1.position, p2.position, t);
                 yield return null;
             }
-            leftToRight = !leftToRight;
         }
 
         private void Update()
