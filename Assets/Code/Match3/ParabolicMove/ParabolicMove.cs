@@ -3,23 +3,10 @@ using UnityEngine;
 
 public class ParabolicMove : MonoBehaviour
 {
-    const float Height = 0.5f;
+    const float Height = 0.2f;
     public static Vector3 Move(Vector3 startPos, Vector3 endPos, float t)
     {
-        //Vector3 facing = endPos - startPos;
-        //Vector3 relativeUpDir = Quaternion.Euler(0f, 0f, 90f) * facing; //Rotate a vector 90 degrees to the left
 
-        //Debug.DrawRay(startPos, facing, Color.red, 1f);
-        //Debug.DrawRay(startPos, relativeUpDir, Color.green, 1f);
-
-        //float magnitude = facing.magnitude;
-
-        //float x = Mathf.Lerp(0f, magnitude, t);
-
-        //Vector3 scaledLinearPos = new Vector3(x, 0f);
-        //return Quaternion.LookRotation(Vector3.forward, relativeUpDir) * scaledLinearPos;
-
-        //
         Vector3 facing = endPos - startPos;
         float magnitude = facing.magnitude;
 
@@ -31,6 +18,21 @@ public class ParabolicMove : MonoBehaviour
         return Quaternion.LookRotation(Vector3.forward, relativeUpDir) * scaledParabolicPos;
     }
 }
+
+//Vector3 facing = endPos - startPos;
+//Vector3 relativeUpDir = Quaternion.Euler(0f, 0f, 90f) * facing; //Rotate a vector 90 degrees to the left
+
+//Debug.DrawRay(startPos, facing, Color.red, 1f);
+//Debug.DrawRay(startPos, relativeUpDir, Color.green, 1f);
+
+//float magnitude = facing.magnitude;
+
+//float x = Mathf.Lerp(0f, magnitude, t);
+
+//Vector3 scaledLinearPos = new Vector3(x, 0f);
+//return Quaternion.LookRotation(Vector3.forward, relativeUpDir) * scaledLinearPos;
+
+//
 
 
 //https://gist.github.com/ditzel/68be36987d8e7c83d48f497294c66e08
