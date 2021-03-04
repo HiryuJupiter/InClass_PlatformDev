@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 827105729}
   - component: {fileID: 827105732}
-  - component: {fileID: 827105730}
   - component: {fileID: 827105731}
   m_Layer: 0
   m_Name: '#BoardManager'
@@ -156,18 +155,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &827105730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 827105728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c0365f1b616687408c618036e55f8c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &827105731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,10 +172,6 @@ MonoBehaviour:
   - {fileID: 4930008024683762431, guid: 8437c422c7780f54781bc8ded98e0fd9, type: 3}
   - {fileID: 485643039056016479, guid: 07e4e3005a808bf44bae80b620d2ab9f, type: 3}
   - {fileID: 3264948923060214674, guid: 7b2f407fdabdb1042a97bc404b2b3246, type: 3}
-  - {fileID: 8284260285316741513, guid: a89cdbfe12f4c8047b5d03d0058ecc96, type: 3}
-  - {fileID: 8210618298930108509, guid: 2e9ed03a59c9f36438fe90175dd43743, type: 3}
-  - {fileID: 8004238379418873569, guid: 0452dbb4eeee9fb4f9dc1eadbaf40e12, type: 3}
-  - {fileID: 4850932981910894916, guid: 2fb4e42446b2467468f57709f595af37, type: 3}
 --- !u!114 &827105732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,9 +184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca3b6e3d01e5f941bd6a5d7c3afc8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileOffsetMultiplier: 0.1
-  tileCount: 2
-  SwapSpeed: 5
+  tileGap: 0.2
+  tilesPerRow: 4
 --- !u!1 &880125505
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +266,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 15
+  far clip plane: 50
   field of view: 60
   orthographic: 1
   orthographic size: 5
@@ -311,7 +293,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 893106425}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1985219659}
@@ -382,6 +364,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1209167914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1209167916}
+  - component: {fileID: 1209167915}
+  m_Layer: 0
+  m_Name: '#Setting'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1209167915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209167914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e4ce4867c800b4fb0d9f3831ba5cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileMoveSpeed: 5
+  tileFlySpeed: 15
+--- !u!4 &1209167916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209167914}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.14050645, y: -0.00012351014, z: -2.8905182}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1236353147
 GameObject:

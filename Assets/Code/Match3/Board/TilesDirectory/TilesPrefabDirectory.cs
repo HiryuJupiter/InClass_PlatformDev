@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TilesDirectory : MonoBehaviour
+public class TilesPrefabDirectory : MonoBehaviour
 {
     [SerializeField] private Tile[] tilePfs;
 
     List<TileTypes> allTileTypes = new List<TileTypes>();
     Dictionary<TileTypes, Tile> prefabLookUp = new Dictionary<TileTypes, Tile>();
 
-    public Tile[] TilePfs => tilePfs;
-    public float GetTileColliderWidth => tilePfs[0].GetComponent<BoxCollider2D>().size.x;
+    public float GetTileSize => tilePfs[0].GetComponent<BoxCollider2D>().size.x;
 
+    #region Get prefab
     public Tile GetPrefab(TileTypes type) => prefabLookUp[type];
 
     public Tile GetRandomPrefab() => tilePfs[Random.Range(0, tilePfs.Length)];
@@ -26,7 +26,7 @@ public class TilesDirectory : MonoBehaviour
         return prefabLookUp[validTypes[Random.Range(0, validTypes.Count)]];
     }
 
-    public Tile GetRandomPrefabExcept (List<TileTypes> excepts)
+    public Tile GetRandomPrefabExcept(List<TileTypes> excepts)
     {
         List<TileTypes> validTypes = new List<TileTypes>(allTileTypes);
         foreach (var t in excepts)
@@ -35,11 +35,10 @@ public class TilesDirectory : MonoBehaviour
         }
         return prefabLookUp[validTypes[Random.Range(0, validTypes.Count)]];
     }
+    #endregion
 
-    void Awake()
+    public void Initialize()
     {
-        Debug.Log(tilePfs[0].GetComponent<BoxCollider2D>().size);
-
         //Initialize reference collections
         foreach (var tile in tilePfs)
         {

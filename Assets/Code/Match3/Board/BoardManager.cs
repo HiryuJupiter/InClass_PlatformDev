@@ -1,117 +1,108 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(BoardBuilder))]
-[RequireComponent(typeof(TilesDirectory))]
+[RequireComponent(typeof(TilesPrefabDirectory))]
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
 
     [Header("Tile Generation")]
-    [SerializeField] float tileOffsetMultiplier = 0.1f; //The gap offset between tiles.
+    [SerializeField] float tileGap = 0.02f; //The gap offset between tiles.
     [SerializeField] int tilesPerRow = 4;
 
     [Header("Tile Swapping")]
-    [SerializeField] float SwapSpeed = 5f;
 
-    //Status
-    Tile[,] tiles;
-    Vector2Int hoverIndex;
-    bool isMouseOnTile;
-
-    //Ref
-    BoardBuilder builder;
-    TilesDirectory tilesDirectory;
-    MouseHoveringTileIndexChecker mouseHoverTileIndex;
-     
-    //Cache
-    float tileSize;
-    float tileGap;
-
-    public bool IsComboShifting { get; private set; } //Are all the tiles shuffling after a match-3 combo hit?
-    public bool IsAnimatingSwap { get; private set; } //Are we in the swapping animation between 2 tiles?
+    //Classes and components
+    TilesPrefabDirectory directory;
+    BoardStatus status;
 
     #region MonoBehavior
     private void Awake()
     {
         Instance = this;
 
-        //Ref
-        builder = GetComponent<BoardBuilder>();
-        tilesDirectory = GetComponent<TilesDirectory>();
-
-        //Cache
-        tileSize = tilesDirectory.GetTileColliderWidth;
-        tileGap = tileSize * tileOffsetMultiplier;
-    }
-
-    private void Start()
-    {
-        //Create board
-        tiles = builder.CreateBoard(tileGap, tileSize, tilesPerRow);
+        //Classes and components
+        directory = GetComponent<TilesPrefabDirectory>();
+        directory.Initialize();
+        status = new BoardStatus(directory.GetTileSize, tileGap, tilesPerRow);
 
         //Initialize
-        mouseHoverTileIndex = new MouseHoveringTileIndexChecker(tileGap, tileSize, new Vector2(builder.StartPointX, builder.StartPointY));
+        status.tiles = BoardBuilder.CreateBoard(status, directory, transform);
     }
 
     void Update()
     {
-        UpdateMouseHoverIndex();
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+        status.UpdateHoveringTileIndex();
+        CheckForMouseInputs();
     }
     #endregion
 
-    #region Update mouse hover index
-    void UpdateMouseHoverIndex () //Get the tile index that the mouse is hovering above
+    #region Tile interactions
+    void CheckForMouseInputs () 
     {
-        if (isMouseOnTile = mouseHoverTileIndex.TryGetIndex(ref hoverIndex))
+        //Tile selection
+        if (ClickedLMB && !HasSelectedTile && status.isMouseOnBoard)
         {
+            if (status.TrySetHoveringTileAsActive())
+            {
+                status.selectedTile.ActiveStateEnter();
+            }
+        }
 
+        //Tile dragging
+        if (ClickAndDragLMB && HasSelectedTile)
+        {
+            //Make selected tile follow cursor
+            status.selectedTile.ActiveStateUpdate();
+
+            //When entering new tile space, swap tile index and positions between the 2 tiles
+
+        }
+
+        //Tile deselection
+        if (ClickReleasedLMB && HasSelectedTile)
+        {
+            status.selectedTile.ActiveStateRelease();
+            status.selectedTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.selectedTile.TileIndex, 
+                status.startPoint, status.cellSize));
+
+            status.selectedTile = null;
         }
     }
     #endregion
 
-    #region Tile swapping
-    public void SwapTiles(Tile tile1, Tile tile2)
-    {
-        StartCoroutine(DoSwapTile(tile1, tile2));
-    }
+    #region Feedback
 
-    IEnumerator DoSwapTile(Tile tile1, Tile tile2)
-    {
-        Vector3 pos1 = tile1.transform.position;
-        Vector3 pos2 = tile2.transform.position;
+    #endregion
 
-        Debug.DrawLine(pos1, pos2, Color.red, 5f);
 
-        for (float t = 0; t < 1f; t += Time.deltaTime * SwapSpeed)
-        {
-            //Lerp their positions
-            tile1.transform.position = pos1 + ParabolicMove.Move(pos1, pos2, t);
-            tile2.transform.position = pos2 + ParabolicMove.Move(pos2, pos1, t);
-            yield return null;
-        }
+    #region (old) Tile swapping - Click
 
-        //then swap their tile index
+    #endregion
 
-        //Check if there is match
-
-        //If there is a match, shuffle
-    }
+    #region Helpers
+    bool ClickedLMB => Input.GetMouseButtonDown(0);
+    bool ClickReleasedLMB => Input.GetMouseButtonUp(0);
+    bool ClickAndDragLMB => Input.GetMouseButton(0);
+    bool HasSelectedTile => status.HasSelectedTile;
     #endregion
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(20, 20, 900, 20), "Mouse position: " + Input.mousePosition);
-        GUI.Label(new Rect(20, 40, 900, 20), "isMouseOnTile: " + isMouseOnTile);
-        GUI.Label(new Rect(20, 60, 900, 20), "hoverIndex: " + hoverIndex);
-        GUI.Label(new Rect(20, 80, 900, 20), "StartingPos: " + builder.StartPointX + ", " + builder.StartPointY);
-        GUI.Label(new Rect(20, 100, 900, 20), "mouseWorldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        GUI.Label(new Rect(20, 120, 900, 20), "up: " + mouseHoverTileIndex.up);
-        GUI.Label(new Rect(20, 140, 900, 20), "down: " + mouseHoverTileIndex.down);
-        GUI.Label(new Rect(20, 160, 900, 20), "left: " + mouseHoverTileIndex.left);
-        GUI.Label(new Rect(20, 180, 900, 20), "right: " + mouseHoverTileIndex.right);
+        GUI.Label(new Rect(20, 20, 900, 20), "hoverIndex: "     + status.hoverIndex);
+        GUI.Label(new Rect(20, 40, 900, 20), "isMouseOnBoard: " + status.isMouseOnBoard);
+        GUI.Label(new Rect(20, 60, 900, 20), "IsInAnimation: "  + status.IsInAnimation);
+
+        GUI.Label(new Rect(20, 100, 900, 20), "StartingPos: "        + status.startPoint);
+        GUI.Label(new Rect(20, 120, 900, 20), "HasSelectedTile: "   + status.HasSelectedTile);
+        if (status.HasSelectedTile)
+        GUI.Label(new Rect(20, 140, 900, 20), "SelectedTileIndex: " + status.SelectedTileIndex);
+        GUI.Label(new Rect(20, 160, 900, 20), "offsettedMousePos: " + status.offsettedMousePos);
+
+        GUI.Label(new Rect(20, 200, 900, 20), "mouseWorldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        GUI.Label(new Rect(20, 220, 900, 20), "up: "    + status.up);
+        GUI.Label(new Rect(20, 240, 900, 20), "down: "  + status.down);
+        GUI.Label(new Rect(20, 260, 900, 20), "left: "  + status.left);
+        GUI.Label(new Rect(20, 280, 900, 20), "right: " + status.right);
     }
 }

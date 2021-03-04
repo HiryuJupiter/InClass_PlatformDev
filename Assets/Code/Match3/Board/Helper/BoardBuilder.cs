@@ -1,44 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(TilesDirectory))]
-
-public class BoardBuilder : MonoBehaviour
+public static class BoardBuilder
 {
-    TilesDirectory tilesDirectory;
-    public float StartPointX { get; private set; }
-    public float StartPointY { get; private set; }
-
-    public Tile[,] CreateBoard (float tileGap, float tileSize, int tileCount)
+    public static Tile[,] CreateBoard (BoardStatus board, TilesPrefabDirectory pfs, Transform parent)
     {
-        //float halfGap = tileGap * .5f;
-        float cellSize = tileSize + tileGap;
-        float halfCellSize = cellSize * .5f;
-
-        tilesDirectory = GetComponent<TilesDirectory>();
-
         //Initialize tiles array
-        Tile[,] tiles = new Tile[tileCount, tileCount];
+        Tile[,] tiles = new Tile[board.tileCount, board.tileCount];
 
         //Find that starting point (at bottom left corner) to prepare for tile spawning
-        StartPointX = -cellSize * tileCount * .5f;
-        StartPointY = StartPointX;
+
 
         //We cache what's on the left and down below to prevent a match at start.
-        Tile[] previousLeft = new Tile[tileCount];
+        Tile[] previousLeft = new Tile[board.tileCount];
         Tile previousBelow = null;
 
         //Spawn tile prefabs
-        for (int x = 0; x < tileCount; x++)
+        for (int x = 0; x < board.tileCount; x++)
         {
-            for (int y = 0; y < tileCount; y++)
+            for (int y = 0; y < board.tileCount; y++)
             {
-                Vector3 spawnPos = new Vector3(
-                    StartPointX + halfCellSize + cellSize * x ,
-                    StartPointY + halfCellSize + cellSize * y , 0f);
+                Vector3 spawnPos = Tile.IndexToWorldPoint(x, y, board.startPoint, board.cellSize);
 
-                Tile t = Instantiate(tilesDirectory.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, transform);
+                Tile t = MonoBehaviour.Instantiate(pfs.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, parent);
                 t.SetTileIndex(new Vector2Int(x, y));
                 tiles[x, y] = t;
 
@@ -47,7 +30,6 @@ public class BoardBuilder : MonoBehaviour
                 previousBelow = t;
             }
         }
-
         return tiles;
     }
 }

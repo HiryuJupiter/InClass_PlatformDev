@@ -1,64 +1,87 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public enum TileTypes { Up, Down, Left, Right}
+public enum TileTypes { Up, Down, Left, Right }
 
 public class Tile : MonoBehaviour
 {
-    private static Vector2Int[] AdjacentDir = new Vector2Int[] {
-        new Vector2Int(-1, 0),
-        new Vector2Int(-1, 0),
-        new Vector2Int(-1, 0),
-        new Vector2Int(-1, 0)};
-    private static Tile previousSelected = null;
+    const float ZPos_FG = -10f;
 
-    [SerializeField] private GameObject selectionBorder;
-    [SerializeField] private TileTypes type;
+    [SerializeField] GameObject selectionBorder;
+    [SerializeField] TileTypes type;
 
-    private bool imCurrentlySelected;
-    private Vector2 tileIndex;
+    //Status
+    Vector2Int tileIndex;
+    Vector2 targetPosition;
+    float t_DirectLerp = -1f; //Lerp t 
 
     public TileTypes Type => type;
+    public Vector2Int TileIndex => tileIndex;
 
-    public void SetTileIndex (Vector2Int tileIndex)
+    public void SetTileIndex(Vector2Int tileIndex)
     {
         this.tileIndex = tileIndex;
     }
 
-    public  void Select ()
+    public void ActiveStateEnter ()
     {
-        imCurrentlySelected = true;
-        selectionBorder.SetActive(true);
-        previousSelected = this;
-        //SFXManager.instance.PlaySFX(Clip.Select);
+        StopDirectLerp();
+        SetPositionZ(1f);
     }
 
-    public void Deselect()
+    public void ActiveStateUpdate ()
     {
-        imCurrentlySelected = false;
-        selectionBorder.SetActive(false);
-        previousSelected = null;
+        Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        p.z = ZPos_FG;
+        transform.position = p;
     }
 
-    private void OnMouseDowndfdf()
+    public void ActiveStateRelease ()
     {
-        if (BoardManager.Instance.IsComboShifting)
-            return;
+        SetPositionZ(0f);
+    }
 
-        if (imCurrentlySelected) 
+    public void DirectLerpMoveTo(Vector2 targetPosition)
+    {
+        this.targetPosition = targetPosition;
+        bool inDirectMove = t_DirectLerp > 0f;
+        t_DirectLerp = 0f;
+        SetPositionZ(0f);
+
+        if (!inDirectMove)
         {
-            Deselect();
-        }
-        else if (!imCurrentlySelected && previousSelected == null)
-        {
-            Select();
-        }
-        else if (!imCurrentlySelected && previousSelected != null)
-        {
-            BoardManager.Instance.SwapTiles(this, previousSelected);
-            previousSelected.Deselect();
+            StartCoroutine(DoDirectLerp());
         }
     }
+
+    IEnumerator DoDirectLerp()
+    {
+        while (t_DirectLerp < 1f)
+        {
+            t_DirectLerp += Time.deltaTime * Settings.TileMoveSpeed;
+            transform.position = Vector2.Lerp(transform.position, targetPosition,
+                t_DirectLerp);
+            //transform.position = Vector3.MoveTowards(transform.position, targetPosition,
+            //    Settings.TileMoveSpeed * Time.deltaTime);
+            yield return null;
+        }
+        t_DirectLerp = -1f;
+    }
+
+    void StopDirectLerp() => t_DirectLerp = -1;
+    void SetPositionZ (float z)
+    {
+        Vector3 p = transform.position;
+        p.z = z;
+        transform.position = p;
+    }
+
+    public static Vector2 IndexToWorldPoint(Vector2Int tileIndex, Vector2 StartPoint, float cellSize)
+    => new Vector2(
+            StartPoint.x + cellSize * .5f + cellSize * tileIndex.x,
+            StartPoint.y + cellSize * .5f + cellSize * tileIndex.y);
+    public static Vector2 IndexToWorldPoint(int indexX, int indexY, Vector2 StartPoint, float cellSize)
+        => new Vector2(
+            StartPoint.x + cellSize * .5f + cellSize * indexX,
+            StartPoint.y + cellSize * .5f + cellSize * indexY);
 }
-
-//https://www.raywenderlich.com/673-how-to-make-a-match-3-game-in-unity
