@@ -394,8 +394,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e4ce4867c800b4fb0d9f3831ba5cfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileMoveSpeed: 5
-  tileFlySpeed: 15
+  tileMoveSpeed: 4
+  tileFlySpeed: 10
 --- !u!4 &1209167916
 Transform:
   m_ObjectHideFlags: 0

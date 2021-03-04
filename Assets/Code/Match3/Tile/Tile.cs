@@ -9,6 +9,8 @@ public class Tile : MonoBehaviour
 
     [SerializeField] GameObject selectionBorder;
     [SerializeField] TileTypes type;
+    [SerializeField] TextMesh textMeshA;
+    [SerializeField] TextMesh textMeshB;
 
     //Status
     Vector2Int tileIndex;
@@ -21,22 +23,30 @@ public class Tile : MonoBehaviour
     public void SetTileIndex(Vector2Int tileIndex)
     {
         this.tileIndex = tileIndex;
+        textMeshA.text = tileIndex.ToString();
     }
 
-    public void ActiveStateEnter ()
+    public void ReassignTileIndex(Vector2Int newIndex)
+    {
+        //Debug.Log("Reasign index. Old: " + newIndex + ", new: " + newIndex);
+        this.tileIndex = newIndex;
+        textMeshB.text = newIndex.ToString();
+    }
+
+    public void ActiveState_Enter ()
     {
         StopDirectLerp();
         SetPositionZ(1f);
     }
 
-    public void ActiveStateUpdate ()
+    public void ActiveState_Update ()
     {
         Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         p.z = ZPos_FG;
         transform.position = p;
     }
 
-    public void ActiveStateRelease ()
+    public void ActiveState_Release ()
     {
         SetPositionZ(0f);
     }

@@ -34,6 +34,7 @@ public class BoardManager : MonoBehaviour
     {
         status.UpdateHoveringTileIndex();
         CheckForMouseInputs();
+        status.CacheStatusAsPrevious();
     }
     #endregion
 
@@ -45,7 +46,7 @@ public class BoardManager : MonoBehaviour
         {
             if (status.TrySetHoveringTileAsActive())
             {
-                status.selectedTile.ActiveStateEnter();
+                status.activeTile.ActiveState_Enter();
             }
         }
 
@@ -53,20 +54,35 @@ public class BoardManager : MonoBehaviour
         if (ClickAndDragLMB && HasSelectedTile)
         {
             //Make selected tile follow cursor
-            status.selectedTile.ActiveStateUpdate();
+            status.activeTile.ActiveState_Update();
 
-            //When entering new tile space, swap tile index and positions between the 2 tiles
+            //When entering new tile space
+            if (EnteredNewTile)
+            {
+                Tile newTile = status.GetHoveringTile();
+                if (newTile != null)
+                {
+                    //Tell it to go to old position
+                    newTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.SelectedTileIndex, status.startPoint, status.cellSize));
 
+                    //Swap tile index
+                    status.SwapTilesIndexs(newTile, status.activeTile);
+
+                    //Debug.Log("Swapping index. Active: " + activeIndex + ", newIndex" + newTile.TileIndex);
+                    //Debug.Log("assigning activeTile (of index " + activeIndex + ") with newIndex: " + newTile.TileIndex);
+                    //Debug.Log("assigning newTile (of index " + newTile.TileIndex + ") with activeIndex: " + activeIndex);
+                }
+            }
         }
 
         //Tile deselection
         if (ClickReleasedLMB && HasSelectedTile)
         {
-            status.selectedTile.ActiveStateRelease();
-            status.selectedTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.selectedTile.TileIndex, 
+            status.activeTile.ActiveState_Release();
+            status.activeTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.activeTile.TileIndex, 
                 status.startPoint, status.cellSize));
 
-            status.selectedTile = null;
+            status.activeTile = null;
         }
     }
     #endregion
@@ -85,6 +101,7 @@ public class BoardManager : MonoBehaviour
     bool ClickReleasedLMB => Input.GetMouseButtonUp(0);
     bool ClickAndDragLMB => Input.GetMouseButton(0);
     bool HasSelectedTile => status.HasSelectedTile;
+    public bool EnteredNewTile => status.isMouseOnBoard && (status.hoverIndexPrev != status.hoverIndex);
     #endregion
 
     private void OnGUI()
@@ -97,12 +114,22 @@ public class BoardManager : MonoBehaviour
         GUI.Label(new Rect(20, 120, 900, 20), "HasSelectedTile: "   + status.HasSelectedTile);
         if (status.HasSelectedTile)
         GUI.Label(new Rect(20, 140, 900, 20), "SelectedTileIndex: " + status.SelectedTileIndex);
-        GUI.Label(new Rect(20, 160, 900, 20), "offsettedMousePos: " + status.offsettedMousePos);
 
         GUI.Label(new Rect(20, 200, 900, 20), "mouseWorldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
         GUI.Label(new Rect(20, 220, 900, 20), "up: "    + status.up);
         GUI.Label(new Rect(20, 240, 900, 20), "down: "  + status.down);
         GUI.Label(new Rect(20, 260, 900, 20), "left: "  + status.left);
         GUI.Label(new Rect(20, 280, 900, 20), "right: " + status.right);
+
+        for (int x = 0; x < status.tiles.GetLength(0); x++)
+        {
+            for (int y = 0; y < status.tiles.GetLength(1); y++)
+            {
+                GUI.Label(new Rect(400 + x * 50, 120 - y * 20, 500, 20), status.tiles[x, y].TileIndex.ToString());
+
+            }
+        }
+
+
     }
 }
