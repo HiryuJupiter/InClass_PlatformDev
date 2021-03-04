@@ -22,6 +22,7 @@ public static class BoardBuilder
                 Vector3 spawnPos = Tile.IndexToWorldPoint(x, y, board.startPoint, board.cellSize);
 
                 Tile t = MonoBehaviour.Instantiate(pfs.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, parent);
+                t.transform.name = x.ToString() + "_"  + y.ToString();
                 t.SetTileIndex(new Vector2Int(x, y));
                 tiles[x, y] = t;
 

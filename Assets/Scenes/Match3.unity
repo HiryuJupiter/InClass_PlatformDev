@@ -396,6 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileMoveSpeed: 4
   tileFlySpeed: 10
+  minDragDist: 10
 --- !u!4 &1209167916
 Transform:
   m_ObjectHideFlags: 0

@@ -4,9 +4,14 @@ using UnityEngine;
 public class ParabolicMove : MonoBehaviour
 {
     const float Height = 0.2f;
-    public static Vector3 Move(Vector3 startPos, Vector3 endPos, float t)
+    public static Vector3 SmoothMove(Vector3 startPos, Vector3 endPos, float t)
     {
+        t = t * t * (3f - 2f * t);
+        return LinearMove(startPos, endPos, t);
+    }
 
+    public static Vector3 LinearMove(Vector3 startPos, Vector3 endPos, float t)
+    {
         Vector3 facing = endPos - startPos;
         float magnitude = facing.magnitude;
 

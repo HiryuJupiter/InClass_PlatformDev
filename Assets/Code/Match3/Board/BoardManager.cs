@@ -33,28 +33,54 @@ public class BoardManager : MonoBehaviour
     void Update()
     {
         status.UpdateHoveringTileIndex();
-        CheckForMouseInputs();
+        TileSelectionUpdate();
         status.CacheStatusAsPrevious();
     }
     #endregion
 
     #region Tile interactions
-    void CheckForMouseInputs () 
+    void TileSelectionUpdate () 
     {
         //Tile selection
-        if (ClickedLMB && !HasSelectedTile && status.isMouseOnBoard)
+        if (ClickedLMB && status.isMouseOnBoard)
         {
-            if (status.TrySetHoveringTileAsActive())
-            {
-                status.activeTile.ActiveState_Enter();
-            }
+            status.RegisterInitialMouseClickPosition();
+            status.highlightedTile = status.GetHoveringTile();
+            status.highlightedTile.HighLightTile(true);
         }
 
         //Tile dragging
-        if (ClickAndDragLMB && HasSelectedTile)
+        if (ClickAndDragLMB && (HadDraggingTile || HadHighlightedTile))
         {
-            //Make selected tile follow cursor
-            status.activeTile.ActiveState_Update();
+            MouseDrag();
+        }
+
+        //Tile deselection
+        if (ClickReleasedLMB && (HadDraggingTile || HadHighlightedTile))
+        {
+            MouseRelease();
+        }
+    }
+
+    void MouseDrag ()
+    {
+        if (!InDragMode)
+        {
+            if (DraggedFarEnoughToEnterDragMode)
+            {
+                //Enter dragging mode
+                status.inDragMode = true;
+
+                status.highlightedTile.HighLightTile(false);
+                status.draggingTile = status.highlightedTile;
+                status.draggingTile.DragState_Enter();
+                status.highlightedTile = null;
+            }
+        }
+
+        if (InDragMode)
+        {
+            status.draggingTile.DragState_Update();
 
             //When entering new tile space
             if (EnteredNewTile)
@@ -66,7 +92,7 @@ public class BoardManager : MonoBehaviour
                     newTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.SelectedTileIndex, status.startPoint, status.cellSize));
 
                     //Swap tile index
-                    status.SwapTilesIndexs(newTile, status.activeTile);
+                    status.SwapTilesIndexs(newTile, status.draggingTile);
 
                     //Debug.Log("Swapping index. Active: " + activeIndex + ", newIndex" + newTile.TileIndex);
                     //Debug.Log("assigning activeTile (of index " + activeIndex + ") with newIndex: " + newTile.TileIndex);
@@ -74,23 +100,23 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+    }
 
-        //Tile deselection
-        if (ClickReleasedLMB && HasSelectedTile)
+    void MouseRelease ()
+    {
+        if (status.inDragMode)
         {
-            status.activeTile.ActiveState_Release();
-            status.activeTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.activeTile.TileIndex, 
+            status.inDragMode = false;
+
+            status.draggingTile.DragState_Exit();
+            status.draggingTile.DirectLerpMoveTo(Tile.IndexToWorldPoint(status.draggingTile.TileIndex,
                 status.startPoint, status.cellSize));
 
-            status.activeTile = null;
+            status.draggingTile = null;
         }
+        status.highlightedTile?.HighLightTile(false);
     }
     #endregion
-
-    #region Feedback
-
-    #endregion
-
 
     #region (old) Tile swapping - Click
 
@@ -100,19 +126,24 @@ public class BoardManager : MonoBehaviour
     bool ClickedLMB => Input.GetMouseButtonDown(0);
     bool ClickReleasedLMB => Input.GetMouseButtonUp(0);
     bool ClickAndDragLMB => Input.GetMouseButton(0);
-    bool HasSelectedTile => status.HasSelectedTile;
+    bool HadDraggingTile => status.HadDraggingTile;
+    bool HadHighlightedTile => status.HadHighlightedTile;
+    bool InDragMode => status.inDragMode;
+    bool DraggedFarEnoughToEnterDragMode => Vector2.Distance(
+        (Vector2)Input.mousePosition, status.initialClickPosition) > Settings.MinDragDist;
     public bool EnteredNewTile => status.isMouseOnBoard && (status.hoverIndexPrev != status.hoverIndex);
     #endregion
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(20, 20, 900, 20), "hoverIndex: "     + status.hoverIndex);
-        GUI.Label(new Rect(20, 40, 900, 20), "isMouseOnBoard: " + status.isMouseOnBoard);
-        GUI.Label(new Rect(20, 60, 900, 20), "IsInAnimation: "  + status.IsInAnimation);
+        GUI.Label(new Rect(20, 0, 900, 20), "isMouseOnBoard: " + status.isMouseOnBoard);
+        GUI.Label(new Rect(20, 20, 900, 20), "IsInAnimation: " + status.IsInAnimation);
+        GUI.Label(new Rect(20, 40, 900, 20), "inDragMode: " + status.inDragMode);
+        GUI.Label(new Rect(20, 60, 900, 20), "hoverIndex: "     + status.hoverIndex);
 
         GUI.Label(new Rect(20, 100, 900, 20), "StartingPos: "        + status.startPoint);
-        GUI.Label(new Rect(20, 120, 900, 20), "HasSelectedTile: "   + status.HasSelectedTile);
-        if (status.HasSelectedTile)
+        GUI.Label(new Rect(20, 120, 900, 20), "HasSelectedTile: "   + status.HadDraggingTile);
+        if (status.HadDraggingTile)
         GUI.Label(new Rect(20, 140, 900, 20), "SelectedTileIndex: " + status.SelectedTileIndex);
 
         GUI.Label(new Rect(20, 200, 900, 20), "mouseWorldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));

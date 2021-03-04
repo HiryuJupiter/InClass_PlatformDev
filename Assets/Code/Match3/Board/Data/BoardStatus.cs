@@ -7,11 +7,13 @@ public class BoardStatus
     public Tile[,] tiles;
 
     //Selection status
-   
-    public Tile activeTile;
+    public Vector2 initialClickPosition;
+    public Tile highlightedTile;
+    public Tile draggingTile;
     public bool isMouseOnBoard; //Is mouse hovering over a valid tile
     public bool IsInAnimation;
     public Vector2 offsettedMousePos;
+    public bool inDragMode;
     public Vector2Int hoverIndex { get; private set; }
     public Vector2Int hoverIndexPrev { get; private set; }
 
@@ -33,10 +35,10 @@ public class BoardStatus
 
     float halfBoardSize;
 
-    public bool HasSelectedTile => activeTile != null;
-    public Vector2Int SelectedTileIndex => new Vector2Int(activeTile.TileIndex.x, activeTile.TileIndex.y);
+    public bool HadDraggingTile => draggingTile != null;
+    public bool HadHighlightedTile => highlightedTile != null;
+    public Vector2Int SelectedTileIndex => new Vector2Int(draggingTile.TileIndex.x, draggingTile.TileIndex.y);
     
-
     public BoardStatus(float tileSize, float tileGap, int tileCount)
     {
         //Tile dimensions
@@ -69,12 +71,12 @@ public class BoardStatus
         //   new Vector2(halfBoardSize, halfBoardSize), Color.cyan, 30f);
     }
 
-    public bool IsSelectedTileOfIndex(Vector2Int index) => activeTile != null && activeTile.TileIndex == index;
+    public bool IsSelectedTileOfIndex(Vector2Int index) => draggingTile != null && draggingTile.TileIndex == index;
 
     public bool TrySetHoveringTileAsActive()
     {
-        activeTile = GetHoveringTile();
-        return activeTile != null;
+        draggingTile = GetHoveringTile();
+        return draggingTile != null;
     }
 
     public void SwapTilesIndexs (Tile t1, Tile t2)
@@ -124,6 +126,9 @@ public class BoardStatus
                 Mathf.FloorToInt((mousePos.y + halfBoardSize) / cellSize));
         }
     }
+
+    public void RegisterInitialMouseClickPosition () => 
+        initialClickPosition = Input.mousePosition;
 
     public Vector2 GetTileWorldPosition (Vector2Int tileIndex) => new Vector2(
             startPoint.x + cellSize * .5f + cellSize * tileIndex.x,

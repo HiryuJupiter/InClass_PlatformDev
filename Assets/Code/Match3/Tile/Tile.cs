@@ -20,6 +20,7 @@ public class Tile : MonoBehaviour
     public TileTypes Type => type;
     public Vector2Int TileIndex => tileIndex;
 
+    #region Assign index
     public void SetTileIndex(Vector2Int tileIndex)
     {
         this.tileIndex = tileIndex;
@@ -32,25 +33,36 @@ public class Tile : MonoBehaviour
         this.tileIndex = newIndex;
         textMeshB.text = newIndex.ToString();
     }
+    #endregion
 
-    public void ActiveState_Enter ()
+    #region Drag state
+    public void DragState_Enter()
     {
         StopDirectLerp();
         SetPositionZ(1f);
     }
 
-    public void ActiveState_Update ()
+    public void DragState_Update()
     {
         Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         p.z = ZPos_FG;
         transform.position = p;
     }
 
-    public void ActiveState_Release ()
+    public void DragState_Exit()
     {
         SetPositionZ(0f);
     }
+    #endregion
 
+    #region Highlight
+    public void HighLightTile(bool isTrue)
+    {
+        selectionBorder.SetActive(isTrue);
+    }
+    #endregion
+
+    #region Move
     public void DirectLerpMoveTo(Vector2 targetPosition)
     {
         this.targetPosition = targetPosition;
@@ -60,8 +72,23 @@ public class Tile : MonoBehaviour
 
         if (!inDirectMove)
         {
+            //StartCoroutine(DoParabolicLerp());
             StartCoroutine(DoDirectLerp());
         }
+    }
+
+    IEnumerator DoParabolicLerp()
+    {
+        Vector3 start = transform.position;
+        while (t_DirectLerp < 1f)
+        {
+            t_DirectLerp += Time.deltaTime * Settings.TileMoveSpeed;
+            transform.position = start + ParabolicMove.SmoothMove(start, targetPosition, t_DirectLerp);
+            yield return null;
+        }
+        transform.position = targetPosition;
+
+        t_DirectLerp = -1f;
     }
 
     IEnumerator DoDirectLerp()
@@ -71,21 +98,21 @@ public class Tile : MonoBehaviour
             t_DirectLerp += Time.deltaTime * Settings.TileMoveSpeed;
             transform.position = Vector2.Lerp(transform.position, targetPosition,
                 t_DirectLerp);
-            //transform.position = Vector3.MoveTowards(transform.position, targetPosition,
-            //    Settings.TileMoveSpeed * Time.deltaTime);
             yield return null;
         }
         t_DirectLerp = -1f;
     }
 
     void StopDirectLerp() => t_DirectLerp = -1;
-    void SetPositionZ (float z)
+    void SetPositionZ(float z)
     {
         Vector3 p = transform.position;
         p.z = z;
         transform.position = p;
     }
+    #endregion
 
+    #region Conversion
     public static Vector2 IndexToWorldPoint(Vector2Int tileIndex, Vector2 StartPoint, float cellSize)
     => new Vector2(
             StartPoint.x + cellSize * .5f + cellSize * tileIndex.x,
@@ -94,4 +121,5 @@ public class Tile : MonoBehaviour
         => new Vector2(
             StartPoint.x + cellSize * .5f + cellSize * indexX,
             StartPoint.y + cellSize * .5f + cellSize * indexY);
+    #endregion
 }

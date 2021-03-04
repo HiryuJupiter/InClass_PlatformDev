@@ -18,8 +18,8 @@ public class ClickSwapping : MonoBehaviour
         for (float t = 0; t < 1f; t += Time.deltaTime * swapSpeed)
         {
             //Lerp their positions
-            tile1.transform.position = pos1 + ParabolicMove.Move(pos1, pos2, t);
-            tile2.transform.position = pos2 + ParabolicMove.Move(pos2, pos1, t);
+            tile1.transform.position = pos1 + ParabolicMove.LinearMove(pos1, pos2, t);
+            tile2.transform.position = pos2 + ParabolicMove.LinearMove(pos2, pos1, t);
             yield return null;
         }
 
