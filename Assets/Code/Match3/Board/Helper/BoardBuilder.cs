@@ -1,40 +1,41 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public static class BoardBuilder
-{
-    public static Tile[,] CreateBoard (BoardStatus board, TilesPrefabDirectory pfs, Transform parent)
-    {
-        //Initialize tiles array
-        Tile[,] tiles = new Tile[board.tileCount, board.tileCount];
+//public static class BoardBuilder
+//{
+//    public static Tile[,] CreateBoard (Board board, TilesPoolManager poolManager, Transform parent)
+//    {
+//        //Initialize tiles array
+//        Tile[,] tiles = new Tile[board.TileCount, board.TileCount];
 
-        //Find that starting point (at bottom left corner) to prepare for tile spawning
+//        //We cache what's on the left and down below to prevent a match at start.
+//        Tile[] previousLeft = new Tile[board.TileCount];
+//        Tile previousBelow = null;
 
+//        //Spawn tile prefabs
+//        for (int x = 0; x < board.TileCount; x++)
+//        {
+//            for (int y = 0; y < board.TileCount; y++)
+//            {
+//                Vector3 spawnPos = Tile.IndexToWorldPoint(x, y, board.StartPoint, board.CellSize);
 
-        //We cache what's on the left and down below to prevent a match at start.
-        Tile[] previousLeft = new Tile[board.tileCount];
-        Tile previousBelow = null;
+//                Tile t = poolManager.SpawnRandomExcept(new List<Tile>() { previousBelow, previousLeft[y] });
+//                t.transform.position = spawnPos;
+//                //Tile t = MonoBehaviour.Instantiate(pfs.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, parent);
+//                //t.transform.name = x.ToString() + "_"  + y.ToString();
+//                t.SetTileIndex(new Vector2Int(x, y));
+//                tiles[x, y] = t;
 
-        //Spawn tile prefabs
-        for (int x = 0; x < board.tileCount; x++)
-        {
-            for (int y = 0; y < board.tileCount; y++)
-            {
-                Vector3 spawnPos = Tile.IndexToWorldPoint(x, y, board.startPoint, board.cellSize);
+//                //Cache for next loop
+//                previousLeft[y] = t;
+//                previousBelow = t;
+//            }
+//        }
+//        return tiles;
+//    }
+//}
 
-                Tile t = MonoBehaviour.Instantiate(pfs.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, parent);
-                t.transform.name = x.ToString() + "_"  + y.ToString();
-                t.SetTileIndex(new Vector2Int(x, y));
-                tiles[x, y] = t;
-
-                //Cache for next loop
-                previousLeft[y] = t;
-                previousBelow = t;
-            }
-        }
-        return tiles;
-    }
-}
-
+                //Tile t = MonoBehaviour.Instantiate(poolManager.GetRandomPrefabExcept(previousBelow, previousLeft[y]), spawnPos, Quaternion.identity, parent);
 /*
  //STANDARD MATCH 3 GENERATION
 

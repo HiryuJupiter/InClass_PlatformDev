@@ -3,9 +3,13 @@ using UnityEngine;
 
 public enum TileTypes { Up, Down, Left, Right }
 
-public class Tile : MonoBehaviour
+enum TileMode { LockedInFalling, }
+
+public class Tile : MonoBehaviour, IPoolable
 {
     const float ZPos_FG = -10f;
+    const float MaxFallSpeed = -0.05f;
+
 
     [SerializeField] GameObject selectionBorder;
     [SerializeField] TileTypes type;
@@ -16,9 +20,16 @@ public class Tile : MonoBehaviour
     Vector2Int tileIndex;
     Vector2 targetPosition;
     float t_DirectLerp = -1f; //Lerp t 
+    bool lockedInFallingAnimation;
+    Vector2 fallVelocity;
+
+    //Cache
+    Pool pool;
 
     public TileTypes Type => type;
     public Vector2Int TileIndex => tileIndex;
+    public bool IsTileLocked { get; private set; }
+    public bool LockedInFallingAnimation => lockedInFallingAnimation;
 
     #region Assign index
     public void SetTileIndex(Vector2Int tileIndex)
@@ -32,6 +43,23 @@ public class Tile : MonoBehaviour
         //Debug.Log("Reasign index. Old: " + newIndex + ", new: " + newIndex);
         this.tileIndex = newIndex;
         textMeshB.text = newIndex.ToString();
+    }
+    #endregion
+
+    #region Pool
+    public void InitialActivation(Pool pool)
+    {
+        this.pool = pool;
+    }
+
+    public void Reactivation()
+    {
+
+    }
+
+    public void Despawn()
+    {
+        pool.Despawn(gameObject);
     }
     #endregion
 
@@ -63,14 +91,55 @@ public class Tile : MonoBehaviour
     #endregion
 
     #region Move
-    public void DirectLerpMoveTo(Vector2 targetPosition)
+    public void SetFallingTargetPosition(Vector2 targetPosition)
     {
         this.targetPosition = targetPosition;
-        bool inDirectMove = t_DirectLerp > 0f;
+        if (!lockedInFallingAnimation)
+        { 
+            if ((Vector2)transform.position != targetPosition)
+            {
+                StartCoroutine(DoFall());
+            }
+        }
+    }
+
+    IEnumerator DoFall()
+    {
+        StopDirectLerp();
+        lockedInFallingAnimation = true;
+
+        //Move towards target position while preventing overshoot
+        while ((transform.position.y + fallVelocity.y * Time.deltaTime) >
+            targetPosition.y)
+        {
+            fallVelocity.y = fallVelocity.y > MaxFallSpeed ?
+                 fallVelocity.y - Settings.TileFallAcceleration * Time.deltaTime :
+                 MaxFallSpeed;
+            transform.Translate(fallVelocity);
+            yield return null;
+        }
+
+        lockedInFallingAnimation = false;
+
+        //Do bouncing animation while this tile is not asked to perform direct lerp
+        //while (!inSwappingAnimation)
+        //{
+        //    //do bounce
+        //    break;
+        //}
+
+        //Check for a match
+
+        fallVelocity = Vector2.zero;
+    }
+
+    public void TileSwapMoveToPosition(Vector2 targetPosition) //Used for tile swapping
+    {
+        this.targetPosition = targetPosition;
         t_DirectLerp = 0f;
         SetPositionZ(0f);
 
-        if (!inDirectMove)
+        if (!inSwappingAnimation)
         {
             //StartCoroutine(DoParabolicLerp());
             StartCoroutine(DoDirectLerp());
@@ -102,7 +171,6 @@ public class Tile : MonoBehaviour
         }
         t_DirectLerp = -1f;
     }
-
     void StopDirectLerp() => t_DirectLerp = -1;
     void SetPositionZ(float z)
     {
@@ -112,14 +180,9 @@ public class Tile : MonoBehaviour
     }
     #endregion
 
-    #region Conversion
-    public static Vector2 IndexToWorldPoint(Vector2Int tileIndex, Vector2 StartPoint, float cellSize)
-    => new Vector2(
-            StartPoint.x + cellSize * .5f + cellSize * tileIndex.x,
-            StartPoint.y + cellSize * .5f + cellSize * tileIndex.y);
-    public static Vector2 IndexToWorldPoint(int indexX, int indexY, Vector2 StartPoint, float cellSize)
-        => new Vector2(
-            StartPoint.x + cellSize * .5f + cellSize * indexX,
-            StartPoint.y + cellSize * .5f + cellSize * indexY);
+
+
+    #region Helper
+    bool inSwappingAnimation => t_DirectLerp > 0f;
     #endregion
 }
