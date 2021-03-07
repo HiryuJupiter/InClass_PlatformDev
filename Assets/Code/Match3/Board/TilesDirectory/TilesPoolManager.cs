@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TilesPoolManager : MonoBehaviour
 {
-    [SerializeField] Tile[] tilePfs;
+    [SerializeField] private Tile[] tilePfs;
 
-    List<TileTypes> allTileTypes = new List<TileTypes>();
-    Dictionary<TileTypes, Pool> prefabLookUp = new Dictionary<TileTypes, Pool>();
+    private List<TileTypes> allTileTypes = new List<TileTypes>();
+    private Dictionary<TileTypes, Pool> poolLookUp = new Dictionary<TileTypes, Pool>();
 
     public float GetTileSize() => tilePfs[0].GetComponent<BoxCollider2D>().size.x;
 
@@ -17,18 +17,23 @@ public class TilesPoolManager : MonoBehaviour
         foreach (var tile in tilePfs)
         {
             //If we haven't stored this key in the look up dictionary, then store it.
-            if (!prefabLookUp.ContainsKey(tile.TileType))
+            if (!poolLookUp.ContainsKey(tile.TileType))
             {
                 allTileTypes.Add(tile.TileType);
-                prefabLookUp.Add(tile.TileType, new Pool(tile.gameObject, transform));
+                poolLookUp.Add(tile.TileType, new Pool(tile.gameObject, transform));
             }
+        }
+
+        foreach (var item in poolLookUp)
+        {
+            item.Value.InitializeInactives(5);
         }
     }
 
     #region Spawn tile
     public Tile Spawn(TileTypes type)
     {
-        GameObject go = prefabLookUp[type].Spawn();
+        GameObject go = poolLookUp[type].Spawn();
         return go.GetComponent<Tile>();
     }
 

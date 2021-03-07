@@ -24,7 +24,7 @@ public class TileSwirlModule
         }
     }
 
-    IEnumerator DoSwirlMove(Vector2 targetPosition)
+    private IEnumerator DoSwirlMove(Vector2 targetPosition)
     {
         Debug.DrawLine(transform.position, targetPosition, Color.red, 10f);
         yield return new WaitForSeconds(0.5f);

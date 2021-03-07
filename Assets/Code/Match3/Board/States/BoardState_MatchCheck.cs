@@ -9,7 +9,7 @@ public class BoardState_MatchCheck : BoardStateBase
 
     //2. when there is a match, wait for falling animation first
 
-    bool matchFound;
+    private bool matchFound;
     //TO DO: Match object for match clusters, or maybe like a list of lists
 
     public BoardState_MatchCheck(Board board) : base(board) { }
@@ -35,7 +35,7 @@ public class BoardState_MatchCheck : BoardStateBase
 
     }
 
-    IEnumerator DoCheck()
+    private IEnumerator DoCheck()
     {
         while (!AllTilesAreStill())
         {
@@ -52,7 +52,7 @@ public class BoardState_MatchCheck : BoardStateBase
         }
     }
 
-    bool AllTilesAreStill()
+    private bool AllTilesAreStill()
     {
         foreach (var tile in board.Status.tiles)
         {
@@ -62,15 +62,15 @@ public class BoardState_MatchCheck : BoardStateBase
         return true;
     }
 
-    bool IsThereAMatch ()
+    private bool IsThereAMatch ()
     {
         //Destroy the tiles
         return false;
     }
 
 
-    bool HasTileHere(Vector2Int index) => status.tiles[index.x, index.y] != null;
-    void VacateSlot(Vector2Int index) => status.tiles[index.x, index.y] = null;
-    bool IsTileLocatedAtTopEdge(Vector2Int index) => index.y < status.tiles.GetLength(1);
-    bool IsTileInBound(Vector2Int index) => index.x < status.tiles.GetLength(0) && index.y < status.tiles.GetLength(1);
+    private bool HasTileHere(Vector2Int index) => status.tiles[index.x, index.y] != null;
+    private void VacateSlot(Vector2Int index) => status.tiles[index.x, index.y] = null;
+    private bool IsTileLocatedAtTopEdge(Vector2Int index) => index.y < status.tiles.GetLength(1);
+    private bool IsTileInBound(Vector2Int index) => index.x < status.tiles.GetLength(0) && index.y < status.tiles.GetLength(1);
 }

@@ -9,17 +9,17 @@ public class Board : MonoBehaviour
     public static Board Instance;
 
     [Header("Tile Generation")]
-    [SerializeField] float tileGap = 0.02f; //The gap offset between tiles.
-    [SerializeField] int tileCount = 4; //Tiles per row and collumn
-
+    [SerializeField] private float tileGap = 0.02f; //The gap offset between tiles.
+    [SerializeField] private int tileCount = 4; //Tiles per row and collumn
+    [SerializeField, Range(0f, 0.2f)] private float cardSpawnInterval = .05f;
     //Classes and components
-    BoardStatus status;
-    TileBuilder tileBuilder;
+    private BoardStatus status;
+    private TileBuilder tileBuilder;
 
     //Cache
-    BoardStates currentStateType;
-    BoardStateBase currentStateClass;
-    Dictionary<BoardStates, BoardStateBase> stateClassLookup;
+    private BoardStates currentStateType;
+    private BoardStateBase currentStateClass;
+    private Dictionary<BoardStates, BoardStateBase> stateClassLookup;
 
     public BoardStatus Status => status;
 
@@ -37,20 +37,20 @@ public class Board : MonoBehaviour
 
         //Tile builder
         tileBuilder = new TileBuilder(this, tilePool, tileCount);
-        tileBuilder.BuildBoard();
+        tileBuilder.BuildBoard(cardSpawnInterval);
 
         //FSM
         stateClassLookup = new Dictionary<BoardStates, BoardStateBase>
         {
-            {BoardStates.NullStandby,       new BoardState_NullStandby(this)},
+            {BoardStates.BoardSetup,        new BoardState_BoardSetup(this)},
             {BoardStates.Normal,            new BoardState_Normal(this)},
             {BoardStates.MatchCheck,        new BoardState_MatchCheck(this)},
             {BoardStates.Fall,              new BoardState_Fall(this)},
         };
 
-        currentStateType = BoardStates.NullStandby;
+        currentStateType = BoardStates.BoardSetup;
         currentStateClass = stateClassLookup[currentStateType];
-        SwitchToState(BoardStates.MatchCheck);
+        currentStateClass.StateEntry();
     }
 
     private void Update()
@@ -61,20 +61,20 @@ public class Board : MonoBehaviour
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(20, 0, 900, 20), "currentStateType: " + currentStateType);
-        GUI.Label(new Rect(20, 20, 900, 20), "currentStateClass: " + currentStateClass);
-        GUI.Label(new Rect(20, 40, 900, 20), "TileSize: " + status.tileSize);
-        GUI.Label(new Rect(20, 60, 900, 20), "CellSize: " + status.cellSize);
+        GUI.Label(new Rect(20, 20, 900, 20), "currentStateType: " + currentStateType);
+        GUI.Label(new Rect(20, 40, 900, 20), "currentStateClass: " + currentStateClass);
+        GUI.Label(new Rect(20, 60, 900, 20), "TileSize: " + status.tileSize);
+        GUI.Label(new Rect(20, 80, 900, 20), "CellSize: " + status.cellSize);
 
-        GUI.Label(new Rect(20, 100, 900, 20), "isMouseOnBoard: " + status.isMouseOnBoard);
-        GUI.Label(new Rect(20, 120, 900, 20), "IsInAnimation: " + status.IsInAnimation);
-        GUI.Label(new Rect(20, 140, 900, 20), "inDragMode: " + status.inDragMode);
-        GUI.Label(new Rect(20, 160, 900, 20), "hoverIndex: " + status.HoverIndex);
+        GUI.Label(new Rect(20, 120, 900, 20), "isMouseOnBoard: " + status.isMouseOnBoard);
+        GUI.Label(new Rect(20, 140, 900, 20), "IsInAnimation: " + status.IsInAnimation);
+        GUI.Label(new Rect(20, 160, 900, 20), "inDragMode: " + status.inDragMode);
+        GUI.Label(new Rect(20, 180, 900, 20), "hoverIndex: " + status.HoverIndex);
 
-        GUI.Label(new Rect(20, 200, 900, 20), "StartingPos: " + status.startPoint);
-        GUI.Label(new Rect(20, 220, 900, 20), "HasSelectedTile: " + status.HasDraggingTile);
+        GUI.Label(new Rect(20, 220, 900, 20), "StartingPos: " + status.startPoint);
+        GUI.Label(new Rect(20, 240, 900, 20), "HasSelectedTile: " + status.HasDraggingTile);
         if (status.HasDraggingTile)
-            GUI.Label(new Rect(20, 340, 900, 20), "SelectedTileIndex: " + status.SelectedTileIndex);
+            GUI.Label(new Rect(20, 260, 900, 20), "SelectedTileIndex: " + status.SelectedTileIndex);
 
         GUI.Label(new Rect(20, 300, 900, 20), "mouseWorldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
         GUI.Label(new Rect(20, 320, 900, 20), "up: " + status.bound_top);
@@ -122,8 +122,6 @@ public class Board : MonoBehaviour
             status.startPoint.x + status.cellSize * .5f + status.cellSize * indexX,
             status.startPoint.y + status.cellSize * .5f + status.cellSize * indexY);
     #endregion
-
-    
 }
 
 /*

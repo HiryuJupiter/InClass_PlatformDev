@@ -5,11 +5,11 @@ public class TileDragModule
 {
     const float ZPos_FG = -10f;
 
-    Tile tile;
-    Transform transform;
+    private Tile tile;
+    private Transform transform;
 
-    Vector2 targetPosition;
-    float lerp_t = -1f;
+    private Vector2 targetPosition;
+    private float lerp_t = -1f;
 
     public TileDragModule(Tile tile)
     {
@@ -49,7 +49,7 @@ public class TileDragModule
         }
     }
 
-    IEnumerator DoStraightLerp()
+    private IEnumerator DoStraightLerp()
     {
         while (lerp_t < 1f)
         {
@@ -61,7 +61,7 @@ public class TileDragModule
         lerp_t = -1f;
     }
 
-    void SetPositionZ(float z)
+    private void SetPositionZ(float z)
     {
         //We set the z value to make the dragging tile appear above other tiles
         Vector3 p = transform.position;
@@ -69,7 +69,7 @@ public class TileDragModule
         transform.position = p;
     }
 
-    bool inSwappingAnimation => lerp_t > 0f;
-    void StopDirectLerp() => lerp_t = -1;
+    private bool inSwappingAnimation => lerp_t > 0f;
+    private void StopDirectLerp() => lerp_t = -1;
 
 }

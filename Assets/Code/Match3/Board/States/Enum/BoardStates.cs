@@ -1,6 +1,6 @@
 ﻿public enum BoardStates
 {
-    NullStandby,
+    BoardSetup,
     Normal,
     MatchCheck,
     Fall, 

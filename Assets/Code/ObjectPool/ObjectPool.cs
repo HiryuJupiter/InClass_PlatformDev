@@ -22,6 +22,19 @@ public class Pool
         }
     }
 
+    public void InitializeInactives (int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Spawn();
+        }
+
+        for (int i = active.Count - 1; i >= 0; i--)
+        {
+            Despawn(active[i]);
+        }
+    }
+
     public GameObject Spawn()
     {
         GameObject p;

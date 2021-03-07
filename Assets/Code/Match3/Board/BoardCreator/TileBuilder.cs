@@ -8,6 +8,10 @@ public class TileBuilder
     TilesPoolManager tilePool;
     int tileCount;
 
+    //Cache of spawned tiles to prevent a match 3 on start
+    Tile previousLeft;
+    Tile[] previousBelow;
+
     public TileBuilder(Board board, TilesPoolManager tilePool, int tileCount)
     {
         this.board = board;
@@ -16,29 +20,51 @@ public class TileBuilder
         this.tileCount = tileCount;
     }
 
-    public void BuildBoard()
+    public void BuildBoard(float spawnInterval)
+    {
+        board.StartCoroutine(DoBuildBoard(spawnInterval));
+    }
+
+    private IEnumerator DoBuildBoard (float spawnInterval)
     {
         //We will cache what's on the left and below to prevent a match 3 on start.
-        Tile[] previousLeft = new Tile[tileCount];
-        Tile previousBelow = null;
+        previousLeft = null;
+        previousBelow = new Tile[tileCount];
+
+        yield return new WaitForSeconds(0.2f);
 
         //Spawn tile prefabs
-        for (int x = 0; x < tileCount; x++)
+        for (int y = 0; y < tileCount; y++)
         {
-            for (int y = 0; y < tileCount; y++)
+            for (int x = 0; x < tileCount; x++)
             {
-                List<TileTypes> tilesToAvoid = new List<TileTypes>();
-                if (previousLeft[y] != null) tilesToAvoid.Add(previousLeft[y].TileType);
-                if (previousBelow != null) tilesToAvoid.Add(previousBelow.TileType);
+                InitialSpawnTile(x, y);
+                yield return new WaitForSeconds(spawnInterval);
+            }
 
-                Tile t = SpawnNewTile(new Vector2Int(x, y), tilesToAvoid);
-                t.InitialSwirlMove(board.TileIndexToWorldPoint(t.TileIndex));
+            if (++y >= tileCount)
+                break;
 
-                //Cache for next loop
-                previousLeft[y] = t;
-                previousBelow = t;
+            for (int x = tileCount-1; x >= 0; x--)
+            {
+                InitialSpawnTile(x, y);
+                yield return new WaitForSeconds(spawnInterval);
             }
         }
+    }
+
+    private void InitialSpawnTile (int x, int y)
+    {
+        List<TileTypes> tilesToAvoid = new List<TileTypes>();
+        if (previousLeft != null) tilesToAvoid.Add(previousLeft.TileType);
+        if (previousBelow[x] != null) tilesToAvoid.Add(previousBelow[x].TileType);
+
+        Tile t = SpawnNewTile(new Vector2Int(x, y), tilesToAvoid);
+        t.InitialSwirlMove(board.TileIndexToWorldPoint(t.TileIndex));
+
+        //Cache for next loop
+        previousLeft = t;
+        previousBelow[x] = t;
     }
 
     public Tile SpawnNewTile(Vector2Int targetSlot, List<TileTypes> tileTypesToAvoid)
@@ -95,3 +121,35 @@ public class TileBuilder
 //t.transform.name = x.ToString() + "_" + y.ToString();
 //t.SetTileIndex(new Vector2Int(x, y));
 //tiles[x, y] = t;
+
+
+/*
+     private IEnumerator DoBuildBoard ()
+    {
+        //We will cache what's on the left and below to prevent a match 3 on start.
+        Tile previousLeft = null;
+        Tile[] previousBelow = new Tile[tileCount];
+
+        yield return new WaitForSeconds(0.1f);
+
+        //Spawn tile prefabs
+        for (int y = 0; y < tileCount; y++)
+        {
+            for (int x = 0; x < tileCount; x++)
+            {
+                List<TileTypes> tilesToAvoid = new List<TileTypes>();
+                if (previousLeft != null) tilesToAvoid.Add(previousLeft.TileType);
+                if (previousBelow[x] != null) tilesToAvoid.Add(previousBelow[x].TileType);
+
+                Tile t = SpawnNewTile(new Vector2Int(x, y), tilesToAvoid);
+                t.InitialSwirlMove(board.TileIndexToWorldPoint(t.TileIndex));
+
+                //Cache for next loop
+                previousLeft = t;
+                previousBelow[x] = t;
+
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+    }
+ */

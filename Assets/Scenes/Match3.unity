@@ -185,7 +185,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileGap: 0.2
-  tileCount: 4
+  tileCount: 8
+  cardSpawnInterval: 0.1
 --- !u!1 &893106425
 GameObject:
   m_ObjectHideFlags: 0

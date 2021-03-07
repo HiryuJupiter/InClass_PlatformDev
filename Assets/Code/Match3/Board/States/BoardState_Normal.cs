@@ -113,14 +113,19 @@ public class BoardState_Normal : BoardStateBase
 
     void DebugRemoveTile(Vector2Int index)
     {
-        Debug.Log("RemoveTile " + index);
-        //Remove tile  and shuffle down column
-        Tile t = status.tiles[index.x, index.y];
-        t.Despawn();
-        status.tiles[index.x, index.y] = null;
+        if (!status.inDragMode && status.HasTileAtIndex(index.x, index.y))
+        {
+            Debug.Log("RemoveTile " + index);
+            //Remove tile  and shuffle down column
+            Tile t = status.tiles[index.x, index.y];
+            t.Despawn();
+            status.tiles[index.x, index.y] = null;
 
-        //Enter falling mode
-        //ColumnFallOverEmptyTile(index);
+            //Enter falling mode
+            //ColumnFallOverEmptyTile(index);
+            board.SwitchToState(BoardStates.Fall);
+        }
+
     }
 
     #region Tile Index manipulation

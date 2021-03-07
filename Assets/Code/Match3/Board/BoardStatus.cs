@@ -38,6 +38,10 @@ public class BoardStatus
     public bool HasHighlightedTile => highlightedTile != null;
     public Vector2Int SelectedTileIndex => new Vector2Int(draggingTile.TileIndex.x, draggingTile.TileIndex.y);
 
+    public bool HasTileAtIndex(int x, int y) => (IsTileInrange(x, y) && tiles[x, y] != null);
+    public bool IsTileInrange(int x, int y) => 
+        (x >= 0 && x < tiles.GetLength(0) &&
+         y >= 0 && y < tiles.GetLength(1));
 
     public BoardStatus(int tileCount, float tileSize, float tileGap)
     {
