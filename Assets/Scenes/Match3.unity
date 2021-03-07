@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileGap: 0.2
-  tilesPerRow: 4
+  tileCount: 4
 --- !u!1 &893106425
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileMoveSpeed: 4
-  tileFlySpeed: 10
+  tileFallAcceleration: 0.5
   minDragDist: 10
 --- !u!4 &1209167916
 Transform:

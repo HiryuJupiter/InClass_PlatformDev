@@ -1,0 +1,1 @@
+﻿public enum TileTypes { Up, Down, Left, Right }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1000)]
 public class Settings : MonoBehaviour
 {
     private static Settings Instance;

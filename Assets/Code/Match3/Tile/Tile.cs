@@ -1,60 +1,99 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public enum TileTypes { Up, Down, Left, Right }
-
-enum TileMode { LockedInFalling, }
+/* There are 4 possible states: Stationary, Drag, MatchClear, Fall
+ You can only enter the other 3 states from Stationary, meaning they have to 
+go through Stationary first. Therefore, we simply use a bool isStationary to 
+represent the tile's status.
+ */
 
 public class Tile : MonoBehaviour, IPoolable
 {
-    const float ZPos_FG = -10f;
-    const float MaxFallSpeed = -0.05f;
-
-
-    [SerializeField] GameObject selectionBorder;
-    [SerializeField] TileTypes type;
+    [SerializeField] TileTypes tileType;
     [SerializeField] TextMesh textMeshA;
     [SerializeField] TextMesh textMeshB;
 
     //Status
-    Vector2Int tileIndex;
-    Vector2 targetPosition;
-    float t_DirectLerp = -1f; //Lerp t 
-    bool lockedInFallingAnimation;
-    Vector2 fallVelocity;
+    bool isMoving;
+
+    //Class
+    TileFeedback            tileFeedback;
+    TileDragModule          dragModule;
+    TileFallingModule       fallingModule;
+    TileMatchModule         matchModule;
 
     //Cache
     Pool pool;
 
-    public TileTypes Type => type;
-    public Vector2Int TileIndex => tileIndex;
-    public bool IsTileLocked { get; private set; }
-    public bool LockedInFallingAnimation => lockedInFallingAnimation;
+    public TileTypes TileType => tileType;
+    public Vector2Int TileIndex { get; private set; }
+    public TileStates TileState { get; private set; } = TileStates.Normal;
+    public bool IsMoving => isMoving;
+    public void SetIsMoving(bool value) => isMoving = value;
 
-    #region Assign index
-    public void SetTileIndex(Vector2Int tileIndex)
+    #region Mono
+    void Awake ()
     {
-        this.tileIndex = tileIndex;
-        textMeshA.text = tileIndex.ToString();
-    }
-
-    public void ReassignTileIndex(Vector2Int newIndex)
-    {
-        //Debug.Log("Reasign index. Old: " + newIndex + ", new: " + newIndex);
-        this.tileIndex = newIndex;
-        textMeshB.text = newIndex.ToString();
+        tileFeedback        = GetComponent<TileFeedback>();
+        dragModule          = new TileDragModule(this);
+        fallingModule       = new TileFallingModule(this);
+        matchModule         = new TileMatchModule(this);
     }
     #endregion
 
-    #region Pool
+    #region Initial swirl move
+    public void InitialSwirlMove(Vector2 targetPosition)
+    {
+        fallingModule.SetFallingTargetPosition(targetPosition);
+        //swirlModule.InitialSwirlMove(targetPosition);
+    }
+    #endregion
+
+    #region Falling
+    public void SetFallingTargetPosition(Vector2 targetPosition)
+    {
+        fallingModule.SetFallingTargetPosition(targetPosition);
+    }
+    #endregion
+
+    #region Drag
+    public void DragEntry()
+    {
+        dragModule.DragEntry();
+    }
+
+    public void DragUpdate()
+    {
+        dragModule.DragUpdate();
+    }
+
+    public void DragRelease()
+    {
+        dragModule.DragRelease();
+    }
+
+    public void TileSwapMoveToPosition(Vector2 position)
+    {
+        dragModule.TileSwapMoveToPosition(position);
+    }
+    #endregion
+
+    // Match
+    public void MatchedAndWaitForDespawn()
+    {
+        matchModule.MatchedAndWaitForDespawn();
+    }
+
+    #region Public - IPoolable spawning and despawning
     public void InitialActivation(Pool pool)
     {
         this.pool = pool;
     }
 
-    public void Reactivation()
-    {
-
+    public void Reactivation() 
+    { 
+    
     }
 
     public void Despawn()
@@ -63,126 +102,27 @@ public class Tile : MonoBehaviour, IPoolable
     }
     #endregion
 
-    #region Drag state
-    public void DragState_Enter()
+    #region Public - Minor method
+    //Assign tile index
+    public void SetTileIndex(Vector2Int tileIndex)
     {
-        StopDirectLerp();
-        SetPositionZ(1f);
+        TileIndex = tileIndex;
+        textMeshA.text = tileIndex.ToString();
     }
 
-    public void DragState_Update()
+    public void ReassignTileIndex(Vector2Int newIndex)
     {
-        Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        p.z = ZPos_FG;
-        transform.position = p;
+        //Debug.Log("Reasign index. Old: " + newIndex + ", new: " + newIndex);
+        TileIndex = newIndex;
+        textMeshB.text = newIndex.ToString();
     }
 
-    public void DragState_Exit()
+    //Border highlight
+    public void SetTileHighlight(bool isOn)
     {
-        SetPositionZ(0f);
-    }
-    #endregion
-
-    #region Highlight
-    public void HighLightTile(bool isTrue)
-    {
-        selectionBorder.SetActive(isTrue);
-    }
-    #endregion
-
-    #region Move
-    public void SetFallingTargetPosition(Vector2 targetPosition)
-    {
-        this.targetPosition = targetPosition;
-        if (!lockedInFallingAnimation)
-        { 
-            if ((Vector2)transform.position != targetPosition)
-            {
-                StartCoroutine(DoFall());
-            }
-        }
+        tileFeedback.SetTileHighlight(isOn);
     }
 
-    IEnumerator DoFall()
-    {
-        StopDirectLerp();
-        lockedInFallingAnimation = true;
-
-        //Move towards target position while preventing overshoot
-        while ((transform.position.y + fallVelocity.y * Time.deltaTime) >
-            targetPosition.y)
-        {
-            fallVelocity.y = fallVelocity.y > MaxFallSpeed ?
-                 fallVelocity.y - Settings.TileFallAcceleration * Time.deltaTime :
-                 MaxFallSpeed;
-            transform.Translate(fallVelocity);
-            yield return null;
-        }
-
-        lockedInFallingAnimation = false;
-
-        //Do bouncing animation while this tile is not asked to perform direct lerp
-        //while (!inSwappingAnimation)
-        //{
-        //    //do bounce
-        //    break;
-        //}
-
-        //Check for a match
-
-        fallVelocity = Vector2.zero;
-    }
-
-    public void TileSwapMoveToPosition(Vector2 targetPosition) //Used for tile swapping
-    {
-        this.targetPosition = targetPosition;
-        t_DirectLerp = 0f;
-        SetPositionZ(0f);
-
-        if (!inSwappingAnimation)
-        {
-            //StartCoroutine(DoParabolicLerp());
-            StartCoroutine(DoDirectLerp());
-        }
-    }
-
-    IEnumerator DoParabolicLerp()
-    {
-        Vector3 start = transform.position;
-        while (t_DirectLerp < 1f)
-        {
-            t_DirectLerp += Time.deltaTime * Settings.TileMoveSpeed;
-            transform.position = start + ParabolicMove.SmoothMove(start, targetPosition, t_DirectLerp);
-            yield return null;
-        }
-        transform.position = targetPosition;
-
-        t_DirectLerp = -1f;
-    }
-
-    IEnumerator DoDirectLerp()
-    {
-        while (t_DirectLerp < 1f)
-        {
-            t_DirectLerp += Time.deltaTime * Settings.TileMoveSpeed;
-            transform.position = Vector2.Lerp(transform.position, targetPosition,
-                t_DirectLerp);
-            yield return null;
-        }
-        t_DirectLerp = -1f;
-    }
-    void StopDirectLerp() => t_DirectLerp = -1;
-    void SetPositionZ(float z)
-    {
-        Vector3 p = transform.position;
-        p.z = z;
-        transform.position = p;
-    }
-    #endregion
-
-
-
-    #region Helper
-    bool inSwappingAnimation => t_DirectLerp > 0f;
+    public bool InNormalMode => TileState == TileStates.Normal;
     #endregion
 }

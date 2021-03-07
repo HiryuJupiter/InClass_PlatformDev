@@ -17,10 +17,10 @@ public class TilesPoolManager : MonoBehaviour
         foreach (var tile in tilePfs)
         {
             //If we haven't stored this key in the look up dictionary, then store it.
-            if (!prefabLookUp.ContainsKey(tile.Type))
+            if (!prefabLookUp.ContainsKey(tile.TileType))
             {
-                allTileTypes.Add(tile.Type);
-                prefabLookUp.Add(tile.Type, new Pool(tile.gameObject, transform));
+                allTileTypes.Add(tile.TileType);
+                prefabLookUp.Add(tile.TileType, new Pool(tile.gameObject, transform));
             }
         }
     }
@@ -35,13 +35,13 @@ public class TilesPoolManager : MonoBehaviour
     public Tile SpawnRandom() => 
         Spawn(allTileTypes[Random.Range(0, allTileTypes.Count)]);
 
-    public Tile SpawnRandomExcept(List<Tile> excepts)
+    public Tile SpawnRandomExcept(List<TileTypes> excepts)
     {
         List<TileTypes> validTypes = new List<TileTypes>(allTileTypes);
         foreach (var e in excepts)
         {
-            if (e != null && validTypes.Contains(e.Type)) 
-                validTypes.Remove(e.Type);
+            if (validTypes.Contains(e)) 
+                validTypes.Remove(e);
         }
 
         return Spawn(allTileTypes[Random.Range(0, allTileTypes.Count)]);

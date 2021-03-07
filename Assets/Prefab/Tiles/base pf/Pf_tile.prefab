@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8723481238060750130
 Transform:
   m_ObjectHideFlags: 0
@@ -193,7 +193,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2807229973491466311
 Transform:
   m_ObjectHideFlags: 0
@@ -276,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7084235416878471349
 Transform:
   m_ObjectHideFlags: 0
@@ -365,6 +365,7 @@ GameObject:
   - component: {fileID: 6695842683642201838}
   - component: {fileID: 5690283861776587354}
   - component: {fileID: 5315376991981700557}
+  - component: {fileID: 7755422983952865590}
   m_Layer: 0
   m_Name: Pf_tile
   m_TagString: Untagged
@@ -403,10 +404,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5a20fd60d892b4a8147478a2c683fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionBorder: {fileID: 2026261313039410886}
-  type: 0
+  tileType: 0
   textMeshA: {fileID: 4769475370495345957}
   textMeshB: {fileID: 5863152803080924422}
+  arrivedAtTargetLocation: 0
 --- !u!61 &5315376991981700557
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -433,6 +434,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.96502185, y: 0.96502185}
   m_EdgeRadius: 0
+--- !u!114 &7755422983952865590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731915416585066947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c2e3bda86a86a41b15a5cba7083edf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionBorder: {fileID: 2026261313039410886}
 --- !u!1 &8459710241580938768
 GameObject:
   m_ObjectHideFlags: 0

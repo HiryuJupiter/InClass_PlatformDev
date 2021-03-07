@@ -17,6 +17,11 @@ PrefabInstance:
       propertyPath: type
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5690283861776587354, guid: 3c946953a64c72045bc326ec1fd7890d,
+        type: 3}
+      propertyPath: tileType
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6609307336763509729, guid: 3c946953a64c72045bc326ec1fd7890d,
         type: 3}
       propertyPath: m_Sprite
