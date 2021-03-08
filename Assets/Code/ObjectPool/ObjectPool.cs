@@ -22,7 +22,7 @@ public class Pool
         }
     }
 
-    public void InitializeInactives (int count)
+    public void InitializeInactives(int count)
     {
         for (int i = 0; i < count; i++)
         {
@@ -44,7 +44,6 @@ public class Pool
             p = inactive[0];
             p.SetActive(true);
             inactive.RemoveAt(0);
-            p.GetComponent<IPoolable>().Reactivation();
         }
         else
         {
@@ -53,6 +52,7 @@ public class Pool
             p.GetComponent<IPoolable>().InitialActivation(this);
             p.transform.parent = parent;
         }
+        p.GetComponent<IPoolable>().Reactivation();
         active.Add(p);
         return p;
     }
@@ -66,7 +66,6 @@ public class Pool
             p = inactive[0];
             p.SetActive(true);
             inactive.RemoveAt(0);
-            p.GetComponent<IPoolable>().Reactivation();
             p.transform.position = pos;
         }
         else
@@ -76,6 +75,31 @@ public class Pool
             p.GetComponent<IPoolable>().InitialActivation(this);
             p.transform.parent = parent;
         }
+        p.GetComponent<IPoolable>().Reactivation(pos);
+        active.Add(p);
+        return p;
+    }
+
+
+    public GameObject Spawn(Vector3 pos, Quaternion rot)
+    {
+        GameObject p;
+        if (inactive.Count > 0)
+        {
+            //If object pool is not empty, then take an object from the pool and make it active
+            p = inactive[0];
+            p.SetActive(true);
+            inactive.RemoveAt(0);
+            p.transform.position = pos;
+        }
+        else
+        {
+            //If object pool is empty, then spawn a new object.
+            p = GameObject.Instantiate(prefab, pos, Quaternion.identity);
+            p.GetComponent<IPoolable>().InitialActivation(this);
+            p.transform.parent = parent;
+        }
+        p.GetComponent<IPoolable>().Reactivation(pos, rot);
         active.Add(p);
         return p;
     }
@@ -202,5 +226,5 @@ public class Pool
 //        actives.Remove(go);
 //    }
 
-    
+
 //}

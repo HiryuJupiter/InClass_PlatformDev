@@ -5,6 +5,8 @@ public interface IPoolable
 {
     void InitialActivation(Pool pool);
     void Reactivation();
+    void Reactivation(Vector3 pos);
+    void Reactivation(Vector3 pos, Quaternion rot);
     void Despawn();
 }
 

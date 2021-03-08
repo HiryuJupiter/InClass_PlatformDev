@@ -123,6 +123,14 @@ public class Tile : MonoBehaviour, IPoolable
         tileFeedback.SetTileHighlight(isOn);
     }
 
+    public void Reactivation(Vector3 pos)
+    {
+    }
+
+    public void Reactivation(Vector3 pos, Quaternion rot)
+    {
+    }
+
     public bool InNormalMode => TileState == TileStates.Normal;
     #endregion
 }
