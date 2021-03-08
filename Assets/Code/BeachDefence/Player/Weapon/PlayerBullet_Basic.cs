@@ -8,6 +8,8 @@ public class PlayerBullet_Basic : PlayerBulletBase
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float speed = 10f;
     [SerializeField] Light light;
+    [SerializeField] float fadeSpeed = 5f;
+
 
     private Rigidbody rb;
     private PoolManager_BeachDefence poolM;
@@ -35,7 +37,6 @@ public class PlayerBullet_Basic : PlayerBulletBase
 
     private void FixedUpdate()
     {
-        Debug.DrawRay(transform.position, rb.velocity * Time.deltaTime, Color.red, 1f);
         if (Physics.Raycast(transform.position, rb.velocity, out RaycastHit hit, rb.velocity.magnitude * Time.deltaTime, groundLayer))
         {
             HitsGround(hit.collider);
@@ -61,9 +62,22 @@ public class PlayerBullet_Basic : PlayerBulletBase
 
     private void Deactivate()
     {
-        poolM.SpawnFadeOutLight(transform.position - transform.forward * 0.1f, light);
+        //poolM.SpawnFadeOutLight(transform.position - transform.forward * 0.1f, light);
+        rb.velocity = Vector3.zero;
+        RefreshDestroyTimer();
         GetComponent<Collider>().enabled = false;
+        StartCoroutine(FadeOutLight());
         //Destroy(gameObject);
+    }
+
+    IEnumerator FadeOutLight()
+    {
+        while (light.intensity > 0f)
+        {
+            light.intensity -= Time.deltaTime * fadeSpeed;
+            yield return null;
+        }
+        Destroy(gameObject);
     }
 
     private bool IsGroundLayer(Collider col) => groundLayer == (groundLayer | 1 << col.gameObject.layer);

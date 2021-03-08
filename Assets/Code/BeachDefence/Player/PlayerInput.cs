@@ -39,9 +39,4 @@ public class PlayerInput : MonoBehaviour
         MouseY = Input.GetAxis("Mouse Y");
     }
 
-    private void OnGUI()
-    {
-        GUI.Label(new Rect(20, 20, 200, 20), "Mouse X: " + MouseX);
-        GUI.Label(new Rect(20, 40, 200, 20), "Mouse Y: " + MouseY);
-    }
 }
