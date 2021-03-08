@@ -1,0 +1,2 @@
+start doxygen ini
+pause
