@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8723481238060750130
 Transform:
   m_ObjectHideFlags: 0
@@ -193,7 +193,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2807229973491466311
 Transform:
   m_ObjectHideFlags: 0
@@ -276,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7084235416878471349
 Transform:
   m_ObjectHideFlags: 0
@@ -407,7 +407,6 @@ MonoBehaviour:
   tileType: 0
   textMeshA: {fileID: 4769475370495345957}
   textMeshB: {fileID: 5863152803080924422}
-  arrivedAtTargetLocation: 0
 --- !u!61 &5315376991981700557
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -68,7 +68,6 @@ public class BoardState_MatchCheck : BoardStateBase
         return false;
     }
 
-
     private bool HasTileHere(Vector2Int index) => status.tiles[index.x, index.y] != null;
     private void VacateSlot(Vector2Int index) => status.tiles[index.x, index.y] = null;
     private bool IsTileLocatedAtTopEdge(Vector2Int index) => index.y < status.tiles.GetLength(1);

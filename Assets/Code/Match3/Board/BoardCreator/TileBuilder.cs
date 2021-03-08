@@ -39,7 +39,7 @@ public class TileBuilder
             for (int x = 0; x < tileCount; x++)
             {
                 InitialSpawnTile(x, y);
-                yield return new WaitForSeconds(spawnInterval);
+                //yield return new WaitForSeconds(spawnInterval);
             }
 
             if (++y >= tileCount)
@@ -48,7 +48,7 @@ public class TileBuilder
             for (int x = tileCount-1; x >= 0; x--)
             {
                 InitialSpawnTile(x, y);
-                yield return new WaitForSeconds(spawnInterval);
+                //yield return new WaitForSeconds(spawnInterval);
             }
         }
     }

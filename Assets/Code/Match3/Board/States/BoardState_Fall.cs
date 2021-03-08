@@ -8,10 +8,15 @@ public class BoardState_Fall : BoardStateBase
     public override void StateEntry()
     {
         base.StateEntry();
+
         //loop and find all empty slots on the board, 
-        
-        //create new tiles to 
-        //e.g. For loop running starting from the bottom row, check to fill all empty tiles
+        for (int y = 0; y < status.tileCount; y++)
+        {
+            for (int x = 0; x < status.tileCount; x++)
+            {
+                FillEmptyTile(new Vector2Int(x, y));
+            }
+        }
 
         //Tag all the tiles, wait until all tiles are rested, then go to BoardState_Match
     }
