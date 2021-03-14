@@ -324,6 +324,7 @@ GameObject:
   - component: {fileID: 128691814}
   - component: {fileID: 128691815}
   - component: {fileID: 128691816}
+  - component: {fileID: 128691817}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -369,12 +370,34 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128691813}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 776ee03dd16e0e343ad0a9e04675c90d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 1000
+  XSensitivity: 2
+  YSensitivity: 2
+  rotationSmoothTime: 5
+--- !u!114 &128691817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128691813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dc81a17c59e8684292bdd339c1f7c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axes: 0
+  sensitivityX: 10
+  sensitivityY: 10
+  minimumX: -360
+  maximumX: 360
+  minimumY: -60
+  maximumY: 60
 --- !u!1 &130891838
 GameObject:
   m_ObjectHideFlags: 0
@@ -2788,7 +2811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!108 &1717729391
 Light:
   m_ObjectHideFlags: 0
@@ -2796,12 +2819,12 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1717729390}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 22.18
+  m_Intensity: 0.53
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

@@ -6,29 +6,23 @@ public class MyQuickTest : MonoBehaviour
 {
     void Start()
     {
-        int[] array1 = new int[] { 1, 2, 3 };
-        int[] array2 = array1;
-        ChangeInt(array2);
-
-        Debug.Log("array 1");
-        for (int i = 0; i < array1.Length; i++)
-        {
-            Debug.Log(array1[i].ToString());
-        }
-
-        Debug.Log("array 2");
-        for (int i = 0; i < array2.Length; i++)
-        {
-            Debug.Log(array2[i].ToString());
-        }
+        Debug.Log("mod 1: " + Mod1(1, 4));
+        Debug.Log("mod 2: " + Mod2(1, 4));
+        Debug.Log("mod 1: " + Mod1(-1, 5));
+        Debug.Log("mod 2: " + Mod2(-1, 5));
+        Debug.Log("Mathf.Floor(-1/5)" + (Mathf.Floor(-1f / 5f)));
     }
 
-    void ChangeInt (int[] array)
+
+
+    float Mod1(float a, float b)
     {
-        for (int i = 0; i < array.Length; i++)
-        {
-            array[i] *= 2;
-        //Debug.Log("modified: " + array[i]);
-        }
+        float r = a % b;
+        return a < 0f ? a + b : a;
+    }
+
+    float Mod2(float a, float b)
+    {
+        return a - b * Mathf.Floor(a / b);
     }
 }
